@@ -1,0 +1,133 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# antigen path when using Homebrew:
+source $(brew --prefix)/share/antigen/antigen.zsh
+
+# Load the oh-my-zsh's library.
+antigen use oh-my-zsh
+
+# load plugins
+antigen bundle git
+antigen bundle node
+antigen bundle npm
+antigen bundle aws
+antigen bundle pip
+antigen bundle terraform
+antigen bundle heroku
+antigen bundle git-extras
+antigen bundle zsh-users/zsh-autosuggestions
+antigen bundle zdharma-continuum/fast-syntax-highlighting
+antigen bundle djui/alias-tips
+
+# Load the theme, something more popular:
+# antigen theme robbyrussell
+antigen theme romkatv/powerlevel10k
+
+# more configuration
+# nvm-zsh
+export NVM_DIR="$HOME/.nvm"
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+export NVM_COMPLETION=true
+export NVM_LAZY_LOAD=true
+export NVM_AUTO_USE=true
+antigen bundle lukechilds/zsh-nvm
+
+# Add JBang to environment
+alias j!=jbang
+export PATH="$HOME/.jbang/bin:$PATH"
+
+# Kube Krew
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/hieu.tran/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/hieu.tran/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/hieu.tran/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/hieu.tran/google-cloud-sdk/completion.zsh.inc'; fi
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# asdfs
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+export PATH="$PATH:$HOME/.gem/ruby/3.3.0"
+
+# Tell Antigen that you're done
+antigen apply
+## [Completion]
+## Completion scripts setup. Remove the following line to uninstall
+[[ -f /Users/hieu.tran/.dart-cli-completion/zsh-config.zsh ]] && . /Users/hieu.tran/.dart-cli-completion/zsh-config.zsh || true
+## [/Completion]
+
+# Android
+export ANDROID_HOME=~/Library/Android/sdk
+export NDK_HOME=/Users/hieu.tran/Library/Android/sdk/ndk/27.1.12297006
+export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
+        . "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
+    else
+        export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/hieu.tran/.cache/lm-studio/bin"
+
+# Added by Windsurf
+export PATH="/Users/hieu.tran/.codeium/windsurf/bin:$PATH"
+
+# pnpm
+export PNPM_HOME="/Users/hieu.tran/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+# DNSControl
+eval "$(dnscontrol shell-completion zsh)"
+
+# Added by Windsurf
+export PATH="/Users/hieu.tran/.codeium/windsurf/bin:$PATH"
+
+. "$HOME/.langflow/uv/env"
+export PATH="$HOME/.local/bin:$PATH"
+
+
+alias ccd='claude --allow-dangerously-skip-permissions'
+alias flutter='fvm flutter'
+alias dart='fvm dart'
+
+# bun completions
+[ -s "/Users/hieu.tran/.bun/_bun" ] && source "/Users/hieu.tran/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
