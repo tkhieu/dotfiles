@@ -121,7 +121,7 @@ export PATH="/Users/hieu.tran/.codeium/windsurf/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 
 
-alias ccd='claude --allow-dangerously-skip-permissions'
+alias ccd='claude --dangerously-skip-permissions'
 alias flutter='fvm flutter'
 alias dart='fvm dart'
 
