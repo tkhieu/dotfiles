@@ -8,6 +8,17 @@ packages:
     - 'pyenv'
     - 'dnscontrol'
     - 'gh'
+    - 'direnv'
+    - 'npm'
+    - 'nvm'
+    - 'asdf'
+
+    # Dev libs
+    - 'libyaml'
+    - 'mysql-client'
+    - 'zstd'
+    - 'imagemagick'
+    - 'grpc'
     casks:
     - 'google-chrome'
     - 'visual-studio-code'
@@ -19,3 +30,8 @@ packages:
     - 'docker-desktop'
     - 'postman'
     - 'figma'
+    # AI
+    - 'claude'
+    - 'claude-code'
+    # DB
+    - 'dbeaver'
