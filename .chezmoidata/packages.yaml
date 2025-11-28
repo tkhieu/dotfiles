@@ -13,3 +13,10 @@ packages:
     - 'visual-studio-code'
     - 'notion'
     - 'slack'
+    - 'iterm2'
+    - '1password'
+    # Developer tools
+    - 'docker-desktop'
+    - 'postman'
+    - 'figma'
+    - 'warp'
