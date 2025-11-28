@@ -2,6 +2,12 @@ packages:
   darwin:
     brews:
     - 'git'
+    - 'zsh'
+    - 'htop'
+    - 'antigen'
+    - 'pyenv'
+    - 'dnscontrol'
+    - 'gh'
     casks:
     - 'google-chrome'
     - 'visual-studio-code'
