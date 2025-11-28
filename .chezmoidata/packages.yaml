@@ -1,0 +1,9 @@
+packages:
+  darwin:
+    brews:
+    - 'git'
+    casks:
+    - 'google-chrome'
+    - 'visual-studio-code'
+    - 'notion'
+    - 'slack'
