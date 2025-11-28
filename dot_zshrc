@@ -114,13 +114,6 @@ esac
 # DNSControl
 eval "$(dnscontrol shell-completion zsh)"
 
-# Added by Windsurf
-export PATH="/Users/hieu.tran/.codeium/windsurf/bin:$PATH"
-
-. "$HOME/.langflow/uv/env"
-export PATH="$HOME/.local/bin:$PATH"
-
-
 alias ccd='claude --dangerously-skip-permissions'
 alias flutter='fvm flutter'
 alias dart='fvm dart'
