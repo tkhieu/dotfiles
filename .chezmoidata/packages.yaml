@@ -27,6 +27,8 @@ packages:
     - 'iterm2'
     - '1password'
     - 'raycast'
+    - 'applite'
+    - 'spotify'
     # Developer tools
     - 'docker-desktop'
     - 'postman'
@@ -35,4 +37,4 @@ packages:
     - 'claude'
     - 'claude-code'
     # DB
-    - 'dbeaver'
+    - 'dbeaver-community'
