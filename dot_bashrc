@@ -3,8 +3,11 @@
 export PATH="$PATH:$HOME/.rvm/bin"
 source "/Users/hieu.t/.rover/env"
 
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/hieu.t/.cache/lm-studio/bin"
 
 . "$HOME/.langflow/uv/env"
 . "$HOME/.cargo/env"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/hieu.t/.lmstudio/bin"
+# End of LM Studio CLI section
+

@@ -15,6 +15,7 @@ packages:
     - 'nvm'
     - 'asdf'
     - 'aria2'
+    - 'neovim'
 
     # Dev libs
     - 'libyaml'
@@ -42,5 +43,6 @@ packages:
     # AI
     - 'claude'
     - 'claude-code'
+    - 'lm-studio'
     # DB
     - 'dbeaver-community'
