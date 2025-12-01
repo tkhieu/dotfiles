@@ -48,10 +48,10 @@ export PATH="$HOME/.jbang/bin:$PATH"
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/hieu.tran/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/hieu.tran/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f '/Users/hieu.t/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/hieu.t/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '/Users/hieu.tran/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/hieu.tran/google-cloud-sdk/completion.zsh.inc'; fi
+if [ -f '/Users/hieu.t/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/hieu.t/google-cloud-sdk/completion.zsh.inc'; fi
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
@@ -70,12 +70,12 @@ export PATH="$PATH:$HOME/.gem/ruby/3.3.0"
 antigen apply
 ## [Completion]
 ## Completion scripts setup. Remove the following line to uninstall
-[[ -f /Users/hieu.tran/.dart-cli-completion/zsh-config.zsh ]] && . /Users/hieu.tran/.dart-cli-completion/zsh-config.zsh || true
+[[ -f /Users/hieu.t/.dart-cli-completion/zsh-config.zsh ]] && . /Users/hieu.t/.dart-cli-completion/zsh-config.zsh || true
 ## [/Completion]
 
 # Android
 export ANDROID_HOME=~/Library/Android/sdk
-export NDK_HOME=/Users/hieu.tran/Library/Android/sdk/ndk/27.1.12297006
+export NDK_HOME=/Users/hieu.t/Library/Android/sdk/ndk/27.1.12297006
 export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
@@ -98,13 +98,13 @@ unset __conda_setup
 # <<< conda initialize <<<
 
 # Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/hieu.tran/.cache/lm-studio/bin"
+export PATH="$PATH:/Users/hieu.t/.cache/lm-studio/bin"
 
 # Added by Windsurf
-export PATH="/Users/hieu.tran/.codeium/windsurf/bin:$PATH"
+export PATH="/Users/hieu.t/.codeium/windsurf/bin:$PATH"
 
 # pnpm
-export PNPM_HOME="/Users/hieu.tran/Library/pnpm"
+export PNPM_HOME="/Users/hieu.t/Library/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
@@ -119,7 +119,7 @@ alias flutter='fvm flutter'
 alias dart='fvm dart'
 
 # bun completions
-[ -s "/Users/hieu.tran/.bun/_bun" ] && source "/Users/hieu.tran/.bun/_bun"
+[ -s "/Users/hieu.t/.bun/_bun" ] && source "/Users/hieu.t/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
