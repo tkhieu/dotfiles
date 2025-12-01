@@ -12,6 +12,7 @@ packages:
     - 'npm'
     - 'nvm'
     - 'asdf'
+    - 'aria2'
 
     # Dev libs
     - 'libyaml'
@@ -33,6 +34,7 @@ packages:
     - 'docker-desktop'
     - 'postman'
     - 'figma'
+    - 'shottr'
     # AI
     - 'claude'
     - 'claude-code'
