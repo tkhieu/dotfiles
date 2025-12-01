@@ -30,6 +30,8 @@ packages:
     - 'raycast'
     - 'applite'
     - 'spotify'
+    # Utility & Maintain
+    - 'pearcleaner'
     # Developer tools
     - 'docker-desktop'
     - 'postman'
