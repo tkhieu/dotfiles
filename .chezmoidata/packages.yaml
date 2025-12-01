@@ -10,6 +10,8 @@ packages:
     - 'gh'
     - 'direnv'
     - 'npm'
+    - 'yarn'
+    - 'pnpm'
     - 'nvm'
     - 'asdf'
     - 'aria2'
