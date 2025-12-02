@@ -16,6 +16,7 @@ packages:
     - 'asdf'
     - 'aria2'
     - 'neovim'
+    - 'git-extras'
 
     # Dev libs
     - 'libyaml'
