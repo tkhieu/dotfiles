@@ -7,3 +7,8 @@ sso_registration_scopes = sso:account:access
 sso_session = peraichi
 sso_account_id = 064382801823
 sso_role_name = AWSPowerUserAccess
+
+[profile peraichi-prod]
+sso_session = peraichi
+sso_account_id = 864438383791
+sso_role_name = AWSReadOnlyAccess
