@@ -17,6 +17,7 @@ packages:
     - 'aria2'
     - 'neovim'
     - 'git-extras'
+    - 'awscli'
 
     # Dev libs
     - 'libyaml'
@@ -34,6 +35,7 @@ packages:
     - 'raycast'
     - 'applite'
     - 'spotify'
+    - 'mimestream'
     # Utility & Maintain
     - 'pearcleaner'
     # Developer tools
