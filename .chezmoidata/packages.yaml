@@ -19,6 +19,7 @@ packages:
     - 'git-extras'
     - 'awscli'
     - 'act'
+    - 'tig'
 
     # Dev libs
     - 'libyaml'

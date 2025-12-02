@@ -1,0 +1,12 @@
+[user]
+	email = tr.kimhieu@gmail.com
+	name = Hieu Tran
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF7tI1QnJm9BPjBDInVDcxDp0o1twlQpJq1Vc3V9oVM6
+[init]
+	defaultBranch = main
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+[commit]
+	gpgsign = true
