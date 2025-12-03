@@ -50,5 +50,6 @@ packages:
     - 'claude'
     - 'claude-code'
     - 'lm-studio'
+    - 'antigravity'
     # DB
     - 'dbeaver-community'
