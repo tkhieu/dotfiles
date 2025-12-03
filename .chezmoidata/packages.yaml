@@ -27,6 +27,7 @@ packages:
     - 'zstd'
     - 'imagemagick'
     - 'grpc'
+    - 'ffmpeg'
     casks:
     - 'google-chrome'
     - 'visual-studio-code'
