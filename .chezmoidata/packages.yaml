@@ -39,6 +39,7 @@ packages:
     - 'applite'
     - 'spotify'
     - 'mimestream'
+    - 'meetingbar'
     # Utility & Maintain
     - 'pearcleaner'
     # Developer tools

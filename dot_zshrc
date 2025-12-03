@@ -124,3 +124,5 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 export PATH="$PATH:/Users/hieu.t/.lmstudio/bin"
 # End of LM Studio CLI section
 
+# Added by Antigravity
+export PATH="/Users/hieu.t/.antigravity/antigravity/bin:$PATH"
