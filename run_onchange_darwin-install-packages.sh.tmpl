@@ -9,5 +9,11 @@ brew {{ . | quote }}
 cask {{ . | quote }}
 {{ end -}}
 EOF
+{{ if .packages.darwin.pnpm_globals -}}
+# Install pnpm global packages
+{{ range .packages.darwin.pnpm_globals -}}
+pnpm install -g {{ . | quote }}
+{{ end -}}
+{{ end -}}
 {{ end -}}
 

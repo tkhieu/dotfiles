@@ -54,3 +54,6 @@ packages:
     - 'antigravity'
     # DB
     - 'dbeaver-community'
+    # pnpm global packages
+    pnpm_globals:
+    - 'uipro-cli'
