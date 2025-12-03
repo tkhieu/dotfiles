@@ -56,4 +56,6 @@ packages:
     - 'dbeaver-community'
     # pnpm global packages
     pnpm_globals:
+      # AI tools
     - 'uipro-cli'
+    - 'claudekit-cli'
