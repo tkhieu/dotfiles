@@ -43,7 +43,13 @@ teardown() {
 }
 
 @test "install_from_brewfile calls brew bundle with mocked brew" {
-  mock_brew
+  # Define mock inside the test to ensure it's available in subshell
+  brew() {
+    echo "MOCK: brew $*"
+    return 0
+  }
+  export -f brew
+
   local content='brew "git"'
 
   run install_from_brewfile "$content"
@@ -58,13 +64,25 @@ teardown() {
 }
 
 @test "main fails with nonexistent brewfile" {
-  mock_brew
+  # Define mock inside the test to ensure it's available in subshell
+  brew() {
+    echo "MOCK: brew $*"
+    return 0
+  }
+  export -f brew
+
   run main "/nonexistent/path/brewfile"
   [ "$status" -eq 1 ]
 }
 
 @test "main succeeds with valid brewfile" {
-  mock_brew
+  # Define mock inside the test to ensure it's available in subshell
+  brew() {
+    echo "MOCK: brew $*"
+    return 0
+  }
+  export -f brew
+
   # Create temp brewfile
   echo 'brew "git"' > "$TEST_TEMP_DIR/Brewfile"
 
