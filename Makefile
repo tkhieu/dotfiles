@@ -12,9 +12,9 @@ SHELLCHECK := shellcheck
 # SC2148: missing shebang (zsh files sourced, not executed)
 SC_EXCLUDES := -e SC2296 -e SC1090 -e SC1091 -e SC2148
 
-# Test all
+# Test all (recursive)
 test: lint
-	@$(BATS) tests/
+	@$(BATS) --recursive tests/
 
 # Lint all shell files
 lint: lint-bash lint-install

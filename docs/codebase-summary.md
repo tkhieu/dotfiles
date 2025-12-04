@@ -12,7 +12,7 @@ Personal macOS dotfiles management system using Chezmoi with:
 - Git SSH signing via 1Password
 - AWS CLI with SSO profiles
 - AI-assisted development via ClaudeKit (17 agents, 60+ commands)
-- Comprehensive test infrastructure (Phase 01)
+- Comprehensive test infrastructure (Phase 01-03: 19 unit tests + smoke tests)
 
 ## File Structure
 
@@ -32,10 +32,14 @@ Personal macOS dotfiles management system using Chezmoi with:
 │   ├── common.sh                              # Shared utilities
 │   ├── brew-packages.sh                       # Homebrew install functions
 │   └── pnpm-globals.sh                        # pnpm global install functions
-├── tests/                                     # Test infrastructure [Phase 01]
+├── tests/                                     # Test infrastructure [Phase 01-03]
 │   ├── smoke.bats                             # Smoke tests
+│   ├── install/                               # Unit tests for install scripts [Phase 03]
+│   │   ├── common.bats                        # Tests for common.sh (6 tests)
+│   │   ├── brew-packages.bats                 # Tests for brew-packages.sh (8 tests)
+│   │   └── pnpm-globals.bats                  # Tests for pnpm-globals.sh (5 tests)
 │   └── test_helper/
-│       └── common.bash                        # Shared test utilities
+│       └── common.bash                        # Shared test utilities (mocks, assertions)
 ├── dot_bashrc                                 # Bash configuration
 ├── dot_zshrc                                  # Zsh configuration (primary)
 ├── dot_asdfrc                                 # asdf version manager config
@@ -98,7 +102,16 @@ Chezmoi naming conventions:
 
 **Test Files**:
 - `tests/smoke.bats` - Smoke test suite validating core functionality
-- `tests/test_helper/common.bash` - Shared utilities and setup functions
+- `tests/test_helper/common.bash` - Shared utilities (PROJECT_ROOT, temp directory setup, mocks, assertions)
+- `tests/install/common.bats` - 6 unit tests for common.sh utilities (6 tests)
+- `tests/install/brew-packages.bats` - 8 unit tests for brew package functions (8 tests)
+- `tests/install/pnpm-globals.bats` - 5 unit tests for pnpm global installation (5 tests)
+
+**Test Capabilities** (Phase 03):
+- 19 unit tests across install scripts (Phase 03)
+- Mock strategy: `mock_brew()` and `mock_pnpm()` functions for external command isolation
+- Isolated temp directory per test (prevents cross-test contamination)
+- Assert helpers: `assert_file_exists()`, `assert_dir_exists()`, etc.
 
 ### 4. Git & Security
 
@@ -258,6 +271,26 @@ install_globals uipro-cli claudekit-cli
 ```
 
 **Testability**: Each script can be sourced independently for unit testing without executing main logic
+
+## Phase 03 Unit Tests for Install Scripts
+
+**Scope**: Comprehensive unit tests for all install script functions.
+
+**Coverage**:
+- **19 unit tests** across three install test suites
+- `tests/install/common.bats` - 6 tests for common.sh utilities
+- `tests/install/brew-packages.bats` - 8 tests for brew package functions
+- `tests/install/pnpm-globals.bats` - 5 tests for pnpm globals installation
+
+**Test Infrastructure**:
+- **Mocking Strategy**: `mock_brew()` and `mock_pnpm()` functions isolate external commands
+- **Isolation**: Each test runs in isolated temp directory (prevents cross-test contamination)
+- **Assertions**: Helper functions `assert_file_exists()`, `assert_dir_exists()`, etc.
+- **Setup/Teardown**: PROJECT_ROOT resolution, temp directory lifecycle management
+
+**Makefile Enhancement**:
+- Added `--recursive` flag to `make test` for recursive BATS discovery
+- Supports both smoke tests and new install script unit tests
 
 ## Common Commands
 
