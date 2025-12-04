@@ -20,6 +20,8 @@ packages:
     - 'awscli'
     - 'act'
     - 'tig'
+    - 'fzf'
+    - 'jq'
 
     # Dev libs
     - 'libyaml'
@@ -54,6 +56,8 @@ packages:
     - 'antigravity'
     # DB
     - 'dbeaver-community'
+    # AWS
+    - 'session-manager-plugin'
     # pnpm global packages
     pnpm_globals:
       # AI tools
