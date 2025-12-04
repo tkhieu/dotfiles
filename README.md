@@ -1,5 +1,7 @@
 # Chezmoi Dotfiles Repository
 
+![Tests](https://github.com/tkhieu/dotfiles/actions/workflows/test.yml/badge.svg)
+
 Personal macOS dotfiles management with chezmoi, featuring declarative package management, zsh configuration with modern plugins, and integrated AI-assisted development workflow via ClaudeKit.
 
 ## Quick Start

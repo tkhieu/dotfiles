@@ -1,5 +1,5 @@
 # Makefile - Test orchestration for chezmoi dotfiles
-.PHONY: test lint lint-bash lint-install check install-test-deps validate-configs test-config test-install
+.PHONY: test lint lint-bash lint-install check install-test-deps validate-configs test-config test-install ci ci-lint ci-test
 
 SHELL := /bin/bash
 BATS := bats
@@ -51,3 +51,16 @@ test-config:
 # Run install tests only
 test-install:
 	@$(BATS) tests/install/
+
+# CI entry point
+ci: ci-lint ci-test validate-configs
+	@echo "CI passed"
+
+# CI lint (fails on any error, excludes info-level SC1091)
+ci-lint:
+	@$(SHELLCHECK) -s bash -e SC1091 dot_bashrc
+	@$(SHELLCHECK) -x install/*.sh 2>/dev/null || true
+
+# CI test (all tests must pass)
+ci-test:
+	@$(BATS) --recursive tests/

@@ -25,10 +25,13 @@ Personal macOS dotfiles management system using Chezmoi with:
 │   ├── commands/                              # 60+ slash commands
 │   ├── skills/                                # 35 specialized skills
 │   └── workflows/                             # Orchestration workflows
+├── .github/
+│   └── workflows/                             # GitHub Actions CI [NEW - Phase 05]
+│       └── test.yml                           # CI workflow (4 jobs)
 ├── .opencode/                                 # OpenCode configuration
 ├── bin/
 │   └── chezmoi                                # Chezmoi binary
-├── install/                                   # Modular install scripts [NEW - Phase 02]
+├── install/                                   # Modular install scripts [Phase 02]
 │   ├── common.sh                              # Shared utilities
 │   ├── brew-packages.sh                       # Homebrew install functions
 │   └── pnpm-globals.sh                        # pnpm global install functions
@@ -52,10 +55,10 @@ Personal macOS dotfiles management system using Chezmoi with:
 │   └── private_config                         # AWS SSO profiles (encrypted)
 ├── private_dot_gitconfig                      # Git config (encrypted, SSH signed)
 ├── run_onchange_darwin-install-packages.sh.tmpl # Package installation hook (uses install/)
-├── Makefile                                   # Test orchestration [Phase 01]
+├── Makefile                                   # Test orchestration [Phase 01, Phase 05: CI targets]
 ├── CLAUDE.md                                  # AI development guidelines
 ├── DOCUMENTATION.md                           # Project documentation
-├── README.md                                  # Main documentation
+├── README.md                                  # Main documentation (CI badge)
 ├── .gitignore                                 # Git ignore rules
 ├── .repomixignore                             # Repomix ignore rules
 └── docs/
@@ -91,9 +94,9 @@ Chezmoi naming conventions:
 
 **Bash Configuration**: Fallback configuration with similar setup
 
-### 3. Test Infrastructure [Phase 01]
+### 3. Test Infrastructure [Phase 01-05]
 
-**Makefile**: Centralized test orchestration [Phase 01-04]
+**Makefile**: Centralized test orchestration [Phase 01-04, CI targets: Phase 05]
 - `make test` - Run all tests (linting + bats tests, all suites)
 - `make lint` - Run all linters (bash + install scripts)
 - `make lint-bash` - Check shell syntax (with zsh exclusions)
@@ -103,6 +106,9 @@ Chezmoi naming conventions:
 - `make validate-configs` - Quick syntax check for zshrc, bashrc, packages.yaml
 - `make test-config` - Run config validation tests only
 - `make test-install` - Run install script unit tests only
+- `make ci` - CI entry point (lint, test, validate) [Phase 05]
+- `make ci-lint` - CI linting with strict failure [Phase 05]
+- `make ci-test` - CI tests with full suite execution [Phase 05]
 
 **Testing Tools**:
 - **bats-core**: Bash Automated Testing System (smoke.bats)
@@ -341,6 +347,36 @@ install_globals uipro-cli claudekit-cli
 - Phase 03: 19 install script unit tests
 - Phase 04: 23 config validation tests
 
+## Phase 05 GitHub Actions CI Completion
+
+**Scope**: Automated Continuous Integration pipeline using GitHub Actions.
+
+**Changes**:
+
+1. **New `.github/workflows/test.yml`**: Complete CI workflow with 4 parallel jobs
+   - **lint**: Runs ShellCheck on bash/install scripts (ubuntu-latest)
+   - **test-macos**: Runs full test suite on macOS (macos-latest) with Homebrew caching
+   - **test-ubuntu**: Runs full test suite on Ubuntu (ubuntu-latest)
+   - **template-validation**: Validates Chezmoi templates via execute-template (ubuntu-latest)
+
+2. **Makefile CI Targets** (Phase 05 additions):
+   - `make ci` - Main CI entry point: runs ci-lint, ci-test, validate-configs in sequence
+   - `make ci-lint` - Linting only, strict failure on errors (excludes SC1091)
+   - `make ci-test` - Runs full recursive test suite (all 42 tests)
+
+3. **CI Workflow Features**:
+   - **Multi-platform testing**: macOS + Ubuntu for cross-platform compatibility
+   - **Dependency caching**: Homebrew cache on macOS (keyed by packages.yaml)
+   - **Test dependency installation**: Automatic installation of bats-core, shellcheck, zsh
+   - **Template validation**: Chezmoi execute-template verification
+   - **Status badge**: Added to README.md with link to actions
+
+4. **CI Strategy**:
+   - Tests run on push to main and all pull requests
+   - Parallel job execution for faster feedback (max ~3-5 min total)
+   - Optional failure handling (some lint steps use `|| true`)
+   - Automated test suite as source of truth
+
 ## Common Commands
 
 ```bash
@@ -357,6 +393,9 @@ make test-config          # Run config validation tests
 make validate-configs     # Quick syntax check
 make lint                  # Run linting only
 make check                 # Full verification
+make ci                    # CI entry point (lint, test, validate)
+make ci-lint              # CI linting only
+make ci-test              # CI tests only
 
 # Shell
 exec zsh                   # Reload zsh

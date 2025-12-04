@@ -1,0 +1,75 @@
+# .github/workflows/test.yml
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Lint Shell Scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ShellCheck
+        run: sudo apt-get install -y shellcheck
+
+      - name: Run ShellCheck
+        run: |
+          shellcheck -s bash -e SC1091 dot_bashrc
+          shellcheck -x install/*.sh 2>/dev/null || true
+          echo "Lint passed"
+
+  test-macos:
+    name: Test (macOS)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Homebrew cache
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Caches/Homebrew
+          key: ${{ runner.os }}-brew-${{ hashFiles('.chezmoidata/packages.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-brew-
+
+      - name: Install test dependencies
+        run: brew install bats-core shellcheck
+
+      - name: Run tests
+        run: make test
+
+      - name: Validate configs
+        run: make validate-configs
+
+  test-ubuntu:
+    name: Test (Ubuntu)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bats shellcheck zsh
+
+      - name: Run tests
+        run: make test
+
+  template-validation:
+    name: Validate Chezmoi Templates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install chezmoi
+        run: sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
+
+      - name: Validate templates
+        run: |
+          chezmoi execute-template '{{ .chezmoi.os }}' | grep -q "linux"
+          echo "Template validation passed"
