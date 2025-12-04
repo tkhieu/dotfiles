@@ -1,6 +1,8 @@
 {{ if eq .chezmoi.os "darwin" -}}
 #!/bin/bash
+set -euo pipefail
 
+# Install brew packages via generated Brewfile
 brew bundle --file=/dev/stdin <<EOF
 {{ range .packages.darwin.brews -}}
 brew {{ . | quote }}
@@ -9,11 +11,16 @@ brew {{ . | quote }}
 cask {{ . | quote }}
 {{ end -}}
 EOF
+
 {{ if .packages.darwin.pnpm_globals -}}
-# Install pnpm global packages
-{{ range .packages.darwin.pnpm_globals -}}
-pnpm install -g {{ . | quote }}
-{{ end -}}
+# Install pnpm globals using modular script
+CHEZMOI_SOURCE_DIR="{{ .chezmoi.sourceDir }}"
+# shellcheck source=./install/common.sh
+source "$CHEZMOI_SOURCE_DIR/install/common.sh"
+# shellcheck source=./install/pnpm-globals.sh
+source "$CHEZMOI_SOURCE_DIR/install/pnpm-globals.sh"
+
+install_globals {{ range .packages.darwin.pnpm_globals }}{{ . | quote }} {{ end }}
 {{ end -}}
 {{ end -}}
 
