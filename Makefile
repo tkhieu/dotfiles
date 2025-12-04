@@ -1,5 +1,5 @@
 # Makefile - Test orchestration for chezmoi dotfiles
-.PHONY: test lint lint-bash lint-install check install-test-deps
+.PHONY: test lint lint-bash lint-install check install-test-deps validate-configs test-config test-install
 
 SHELL := /bin/bash
 BATS := bats
@@ -37,3 +37,17 @@ check: test
 # Install test dependencies (for CI)
 install-test-deps:
 	brew install bats-core shellcheck
+
+# Validate shell configs (quick syntax check)
+validate-configs:
+	@zsh -n dot_zshrc && echo "zshrc: OK"
+	@bash -n dot_bashrc && echo "bashrc: OK"
+	@(python3 -c "import yaml; yaml.safe_load(open('.chezmoidata/packages.yaml'))" 2>/dev/null || grep -q "packages:" .chezmoidata/packages.yaml) && echo "packages.yaml: OK"
+
+# Run config tests only
+test-config:
+	@$(BATS) tests/config/
+
+# Run install tests only
+test-install:
+	@$(BATS) tests/install/

@@ -12,7 +12,7 @@ Personal macOS dotfiles management system using Chezmoi with:
 - Git SSH signing via 1Password
 - AWS CLI with SSO profiles
 - AI-assisted development via ClaudeKit (17 agents, 60+ commands)
-- Comprehensive test infrastructure (Phase 01-03: 19 unit tests + smoke tests)
+- Comprehensive test infrastructure (Phase 01-04: 42 tests including install scripts, shell configs, packages, templates)
 
 ## File Structure
 
@@ -32,12 +32,17 @@ Personal macOS dotfiles management system using Chezmoi with:
 │   ├── common.sh                              # Shared utilities
 │   ├── brew-packages.sh                       # Homebrew install functions
 │   └── pnpm-globals.sh                        # pnpm global install functions
-├── tests/                                     # Test infrastructure [Phase 01-03]
+├── tests/                                     # Test infrastructure [Phase 01-04]
 │   ├── smoke.bats                             # Smoke tests
 │   ├── install/                               # Unit tests for install scripts [Phase 03]
 │   │   ├── common.bats                        # Tests for common.sh (6 tests)
 │   │   ├── brew-packages.bats                 # Tests for brew-packages.sh (8 tests)
 │   │   └── pnpm-globals.bats                  # Tests for pnpm-globals.sh (5 tests)
+│   ├── config/                                # Configuration validation tests [Phase 04]
+│   │   ├── zshrc.bats                         # Zsh config validation (7 tests)
+│   │   ├── bashrc.bats                        # Bash config validation (4 tests)
+│   │   ├── packages-yaml.bats                 # YAML package config validation (8 tests)
+│   │   └── template.bats                      # Chezmoi template validation (4 tests)
 │   └── test_helper/
 │       └── common.bash                        # Shared test utilities (mocks, assertions)
 ├── dot_bashrc                                 # Bash configuration
@@ -88,13 +93,16 @@ Chezmoi naming conventions:
 
 ### 3. Test Infrastructure [Phase 01]
 
-**Makefile**: Centralized test orchestration
-- `make test` - Run all tests (linting + bats tests)
+**Makefile**: Centralized test orchestration [Phase 01-04]
+- `make test` - Run all tests (linting + bats tests, all suites)
 - `make lint` - Run all linters (bash + install scripts)
 - `make lint-bash` - Check shell syntax (with zsh exclusions)
 - `make lint-install` - Check install scripts
 - `make check` - Full verification
 - `make install-test-deps` - Install test dependencies (CI)
+- `make validate-configs` - Quick syntax check for zshrc, bashrc, packages.yaml
+- `make test-config` - Run config validation tests only
+- `make test-install` - Run install script unit tests only
 
 **Testing Tools**:
 - **bats-core**: Bash Automated Testing System (smoke.bats)
@@ -103,15 +111,20 @@ Chezmoi naming conventions:
 **Test Files**:
 - `tests/smoke.bats` - Smoke test suite validating core functionality
 - `tests/test_helper/common.bash` - Shared utilities (PROJECT_ROOT, temp directory setup, mocks, assertions)
-- `tests/install/common.bats` - 6 unit tests for common.sh utilities (6 tests)
-- `tests/install/brew-packages.bats` - 8 unit tests for brew package functions (8 tests)
-- `tests/install/pnpm-globals.bats` - 5 unit tests for pnpm global installation (5 tests)
+- `tests/install/common.bats` - 6 unit tests for common.sh utilities
+- `tests/install/brew-packages.bats` - 8 unit tests for brew package functions
+- `tests/install/pnpm-globals.bats` - 5 unit tests for pnpm global installation
+- `tests/config/zshrc.bats` - 7 tests for zsh configuration validation (Phase 04)
+- `tests/config/bashrc.bats` - 4 tests for bash configuration validation (Phase 04)
+- `tests/config/packages-yaml.bats` - 8 tests for YAML package config validation (Phase 04)
+- `tests/config/template.bats` - 4 tests for Chezmoi template validation (Phase 04)
 
-**Test Capabilities** (Phase 03):
-- 19 unit tests across install scripts (Phase 03)
+**Test Capabilities** (Phase 01-04):
+- **42 total tests**: 19 install script unit tests (Phase 03) + 23 config validation tests (Phase 04)
 - Mock strategy: `mock_brew()` and `mock_pnpm()` functions for external command isolation
 - Isolated temp directory per test (prevents cross-test contamination)
 - Assert helpers: `assert_file_exists()`, `assert_dir_exists()`, etc.
+- Config validation: Syntax checking, YAML structure, template rendering
 
 ### 4. Git & Security
 
@@ -292,6 +305,42 @@ install_globals uipro-cli claudekit-cli
 - Added `--recursive` flag to `make test` for recursive BATS discovery
 - Supports both smoke tests and new install script unit tests
 
+## Phase 04 Shell Config Validation Tests
+
+**Scope**: Comprehensive validation tests for shell configurations and package management.
+
+**Coverage**: 23 config validation tests across 4 test suites
+
+**Test Suites**:
+- **zshrc.bats (7 tests)**: Validates zsh configuration
+  - File existence, syntax validation, p10k prompt, antigen initialization, PATH setup, theme sourcing
+
+- **bashrc.bats (4 tests)**: Validates bash configuration
+  - File existence, bash syntax, RVM path, PATH exports
+
+- **packages-yaml.bats (8 tests)**: Validates package configuration
+  - YAML file existence, valid YAML structure, section presence (brews/casks), package quoting, essential packages (git, zsh, bats-core)
+
+- **template.bats (4 tests)**: Validates Chezmoi template rendering
+  - OS detection (darwin/linux), sourceDir path, install template rendering, pnpm globals integration
+
+**Makefile Enhancements**:
+- Added `validate-configs` target for quick syntax checking
+- Added `test-config` target to run config tests only
+- Added `test-install` target to run install tests only
+- All targets integrated into main `test` target via recursive BATS discovery
+
+**Testing Strategy**:
+- Syntax validation using native shell interpreters (zsh, bash)
+- YAML validation using Python or yq tools when available
+- Template validation through chezmoi execute-template
+- Graceful skipping when required tools unavailable
+- Grep-based content validation for configuration structure
+
+**Total Test Count**: 42 tests across all phases
+- Phase 03: 19 install script unit tests
+- Phase 04: 23 config validation tests
+
 ## Common Commands
 
 ```bash
@@ -302,7 +351,10 @@ chezmoi pull               # Pull & apply latest
 chezmoi cd                 # Open repo directory
 
 # Testing
-make test                  # Run all tests
+make test                  # Run all tests (install + config)
+make test-install         # Run install script tests
+make test-config          # Run config validation tests
+make validate-configs     # Quick syntax check
 make lint                  # Run linting only
 make check                 # Full verification
 
