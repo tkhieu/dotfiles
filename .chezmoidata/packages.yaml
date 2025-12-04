@@ -23,6 +23,10 @@ packages:
     - 'fzf'
     - 'jq'
 
+    # Testing tools
+    - 'bats-core'
+    - 'shellcheck'
+
     # Dev libs
     - 'libyaml'
     - 'mysql-client'
