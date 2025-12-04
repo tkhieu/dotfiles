@@ -28,7 +28,11 @@ Personal macOS dotfiles management system using Chezmoi with:
 ├── .opencode/                                 # OpenCode configuration
 ├── bin/
 │   └── chezmoi                                # Chezmoi binary
-├── tests/                                     # Test infrastructure [NEW]
+├── install/                                   # Modular install scripts [NEW - Phase 02]
+│   ├── common.sh                              # Shared utilities
+│   ├── brew-packages.sh                       # Homebrew install functions
+│   └── pnpm-globals.sh                        # pnpm global install functions
+├── tests/                                     # Test infrastructure [Phase 01]
 │   ├── smoke.bats                             # Smoke tests
 │   └── test_helper/
 │       └── common.bash                        # Shared test utilities
@@ -38,8 +42,8 @@ Personal macOS dotfiles management system using Chezmoi with:
 ├── dot_aws/
 │   └── private_config                         # AWS SSO profiles (encrypted)
 ├── private_dot_gitconfig                      # Git config (encrypted, SSH signed)
-├── run_onchange_darwin-install-packages.sh.tmpl # Package installation hook
-├── Makefile                                   # Test orchestration [NEW]
+├── run_onchange_darwin-install-packages.sh.tmpl # Package installation hook (uses install/)
+├── Makefile                                   # Test orchestration [Phase 01]
 ├── CLAUDE.md                                  # AI development guidelines
 ├── DOCUMENTATION.md                           # Project documentation
 ├── README.md                                  # Main documentation
@@ -186,6 +190,31 @@ Located in `.claude/` directory:
 4. **AWS**: SSO profiles managed via 1Password
 5. **Safe Operations**: Always review with `chezmoi diff` before applying
 
+### 8. Modular Installation Scripts (install/) [NEW - Phase 02]
+
+**install/common.sh**: Shared utilities library
+- `command_exists()` - Check if command is available
+- `log_info()` / `log_error()` - Logging with prefixes
+- `ensure_brew()` - Verify Homebrew availability
+- `ensure_pnpm()` - Verify pnpm availability
+
+**install/brew-packages.sh**: Homebrew package installation
+- `generate_brewfile()` - Create Homebrew formula entries
+- `generate_caskfile()` - Create Homebrew cask entries
+- `install_from_brewfile()` - Install from Brewfile content
+- Dual-mode: Can be sourced (for testing) or executed directly
+- Supports stdin-based Brewfile for atomic installations
+
+**install/pnpm-globals.sh**: Node.js global package installation
+- `install_global()` - Install single pnpm global package
+- `install_globals()` - Install multiple packages
+- Dual-mode: Can be sourced (for testing) or executed directly
+- Integrated with common.sh for utility access
+
+**Dual-Mode Capability**: All scripts support both:
+1. **Source Mode** (testing): `source install/script.sh` then call functions
+2. **Execute Mode** (production): `./install/script.sh` direct execution
+
 ## Phase 01 Testing Infrastructure Completion
 
 **Scope**: Added foundational testing infrastructure for shell scripts and configurations.
@@ -203,6 +232,32 @@ Located in `.claude/` directory:
 - Testing installation scripts
 - Validating shell behavior
 - Static analysis with exclusions for modern shell features
+
+## Phase 02 Refactored Installation Scripts
+
+**Scope**: Modularized install scripts for maintainability and testability.
+
+**Motivation**:
+- Single monolithic script difficult to test
+- Functions isolated for unit testing capability
+- Utilities separated for reuse across scripts
+- Support both Chezmoi hooks and standalone execution
+
+**Architecture**:
+- **install/common.sh**: Central utilities library
+- **install/brew-packages.sh**: Brew installation logic
+- **install/pnpm-globals.sh**: Node.js global packages logic
+- **run_onchange_darwin-install-packages.sh.tmpl**: Chezmoi hook sourcing modular scripts
+
+**Integration Pattern**:
+```bash
+# Chezmoi hook sources modular scripts
+source "$CHEZMOI_SOURCE_DIR/install/common.sh"
+source "$CHEZMOI_SOURCE_DIR/install/pnpm-globals.sh"
+install_globals uipro-cli claudekit-cli
+```
+
+**Testability**: Each script can be sourced independently for unit testing without executing main logic
 
 ## Common Commands
 
