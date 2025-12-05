@@ -15,7 +15,7 @@ antigen use oh-my-zsh
 
 # load plugins
 antigen bundle git
-antigen bundle node
+# antigen bundle node  # Disabled: conflicts with zsh-nvm lazy loading
 # antigen bundle npm
 antigen bundle aws
 antigen bundle pip
@@ -37,6 +37,9 @@ export NVM_COMPLETION=true
 export NVM_LAZY_LOAD=true
 export NVM_AUTO_USE=true
 antigen bundle lukechilds/zsh-nvm
+
+# Tell Antigen that you're done (MUST be after all antigen bundles)
+antigen apply
 
 # Add JBang to environment
 alias j!=jbang
@@ -64,8 +67,6 @@ export PATH="$PATH:$HOME/.rvm/bin"
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 export PATH="$PATH:$HOME/.gem/ruby/3.3.0"
 
-# Tell Antigen that you're done
-antigen apply
 ## [Completion]
 ## Completion scripts setup. Remove the following line to uninstall
 [[ -f /Users/hieu.t/.dart-cli-completion/zsh-config.zsh ]] && . /Users/hieu.t/.dart-cli-completion/zsh-config.zsh || true
