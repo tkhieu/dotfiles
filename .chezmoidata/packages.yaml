@@ -1,69 +1,96 @@
 packages:
   darwin:
     brews:
-    - 'git'
-    - 'zsh'
-    - 'htop'
-    - 'antigen'
-    - 'pyenv'
-    - 'dnscontrol'
-    - 'gh'
-    - 'direnv'
-    - 'npm'
-    - 'yarn'
-    - 'pnpm'
-    - 'nvm'
-    - 'asdf'
-    - 'aria2'
-    - 'neovim'
-    - 'git-extras'
-    - 'awscli'
-    - 'act'
-    - 'tig'
-    - 'fzf'
-    - 'jq'
+      # Core & Shell
+      - 'antigen'
+      - 'fzf'
+      - 'git'
+      - 'htop'
+      - 'jq'
+      - 'neovim'
+      - 'zsh'
 
-    # Testing tools
-    - 'bats-core'
-    - 'shellcheck'
+      # Git Tools
+      - 'gh'
+      - 'git-extras'
+      - 'tig'
 
-    # Dev libs
-    - 'libyaml'
-    - 'mysql-client'
-    - 'zstd'
-    - 'imagemagick'
-    - 'grpc'
-    - 'ffmpeg'
+      # Package & Version Managers
+      - 'asdf'
+      - 'npm'
+      - 'nvm'
+      - 'pnpm'
+      - 'pyenv'
+      - 'yarn'
+
+      # DevOps & Cloud
+      - 'act'
+      - 'awscli'
+      - 'direnv'
+      - 'dnscontrol'
+
+      # Development Libraries
+      - 'ffmpeg'
+      - 'grpc'
+      - 'imagemagick'
+      - 'libyaml'
+      - 'mysql-client'
+      - 'zstd'
+
+      # Testing Tools
+      - 'bats-core'
+      - 'shellcheck'
+
+      # Utilities
+      - 'aria2'
+
+      # AI Tools
+      - 'opencode'
+
     casks:
-    - 'google-chrome'
-    - 'visual-studio-code'
-    - 'notion'
-    - 'slack'
-    - 'iterm2'
-    - '1password'
-    - 'raycast'
-    - 'applite'
-    - 'spotify'
-    - 'mimestream'
-    - 'meetingbar'
-    # Utility & Maintain
-    - 'pearcleaner'
-    # Developer tools
-    - 'docker-desktop'
-    - 'postman'
-    - 'figma'
-    - 'shottr'
-    # AI
-    - 'claude'
-    - 'claude-code'
-    - 'lm-studio'
-    - 'antigravity'
-    # DB
-    - 'dbeaver-community'
-    # AWS
-    - 'session-manager-plugin'
-    # pnpm global packages
+      # Browsers
+      - 'google-chrome'
+
+      # Development Tools
+      - 'docker-desktop'
+      - 'figma'
+      - 'iterm2'
+      - 'postman'
+      - 'shottr'
+      - 'visual-studio-code'
+      - 'wave'
+
+      # Productivity
+      - 'meetingbar'
+      - 'notion'
+      - 'notion-calendar'
+      - 'raycast'
+      - 'slack'
+
+      # Security
+      - '1password'
+
+      # Utilities
+      - 'applite'
+      - 'mimestream'
+      - 'pearcleaner'
+
+      # Media
+      - 'spotify'
+
+      # AI Tools
+      - 'antigravity'
+      - 'claude'
+      - 'claude-code'
+      - 'lm-studio'
+
+      # Database
+      - 'dbeaver-community'
+
+      # Cloud & AWS
+      - 'session-manager-plugin'
+
     pnpm_globals:
-      # AI tools
-    - 'uipro-cli'
-    - 'claudekit-cli'
+      # AI Tools
+      - 'claudekit-cli'
+      - 'uipro-cli'
