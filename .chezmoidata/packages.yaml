@@ -17,6 +17,7 @@ packages:
 
       # Package & Version Managers
       - 'asdf'
+      - 'oven-sh/bun/bun'
       - 'npm'
       - 'nvm'
       - 'pnpm'
