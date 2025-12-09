@@ -55,6 +55,7 @@ packages:
 
       # Development Tools
       - 'docker-desktop'
+      - 'droid'
       - 'figma'
       - 'iterm2'
       - 'postman'
