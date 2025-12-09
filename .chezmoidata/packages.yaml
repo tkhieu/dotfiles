@@ -99,6 +99,4 @@ packages:
       # AI Tools
       - 'claudekit-cli'
       - 'uipro-cli'
-
-      # Utilities
       - '@charmland/crush'
