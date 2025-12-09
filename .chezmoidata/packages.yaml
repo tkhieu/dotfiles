@@ -47,6 +47,7 @@ packages:
       - 'aria2'
 
       # AI Tools
+      - 'block-goose-cli'
       - 'opencode'
 
     casks:
@@ -96,7 +97,6 @@ packages:
 
     pnpm_globals:
       # AI Tools
-      - 'block-goose-cli'
       - 'claudekit-cli'
       - 'uipro-cli'
 
