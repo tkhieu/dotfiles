@@ -83,6 +83,7 @@ packages:
 
       # AI Tools
       - 'antigravity'
+      - 'block-goose'
       - 'claude'
       - 'claude-code'
       - 'lm-studio'
@@ -95,6 +96,7 @@ packages:
 
     pnpm_globals:
       # AI Tools
+      - 'block-goose-cli'
       - 'claudekit-cli'
       - 'uipro-cli'
 
