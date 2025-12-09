@@ -45,7 +45,6 @@ packages:
 
       # Utilities
       - 'aria2'
-      - 'charmbracelet/tap/crush'
 
       # AI Tools
       - 'opencode'
