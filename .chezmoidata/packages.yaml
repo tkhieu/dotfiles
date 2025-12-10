@@ -70,6 +70,7 @@ packages:
       - 'notion-calendar'
       - 'raycast'
       - 'slack'
+      - 'obsidian'
 
       # Security
       - '1password'
