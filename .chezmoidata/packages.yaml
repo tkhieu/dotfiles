@@ -30,6 +30,7 @@ packages:
       - 'awscli'
       - 'direnv'
       - 'dnscontrol'
+      - 'supabase/tap/supabase'
 
       # Development Libraries
       - 'ffmpeg'
