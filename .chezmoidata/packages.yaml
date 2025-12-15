@@ -102,3 +102,6 @@ packages:
       - 'claudekit-cli'
       - 'uipro-cli'
       - '@charmland/crush'
+
+      # DevOps & Cloud
+      - 'wrangler@latest'
