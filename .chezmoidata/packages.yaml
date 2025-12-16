@@ -54,6 +54,7 @@ packages:
     casks:
       # Browsers
       - 'google-chrome'
+      - 'thebrowsercompany-dia'
 
       # Development Tools
       - 'docker-desktop'
