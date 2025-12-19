@@ -82,6 +82,7 @@ packages:
       - 'applite'
       - 'mimestream'
       - 'pearcleaner'
+      - 'syncthing-app'
 
       # Media
       - 'spotify'
