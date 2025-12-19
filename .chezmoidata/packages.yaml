@@ -76,6 +76,7 @@ packages:
 
       # Security
       - '1password'
+      - 'cloudflare-warp'
 
       # Utilities
       - 'applite'
