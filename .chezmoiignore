@@ -1,0 +1,24 @@
+# Repository-only directories
+bin/
+tests/
+.claude/
+docs/
+plans/
+
+# Repository-only files
+CLAUDE.md
+DOCUMENTATION.md
+README.md
+Makefile
+install
+LICENSE
+
+# CI/CD and development
+.github/
+.gitignore
+.editorconfig
+
+# Chezmoi internal (already ignored by default, but explicit is fine)
+.chezmoiignore
+.chezmoiroot
+.chezmoiversion
