@@ -73,6 +73,7 @@ packages:
       - 'raycast'
       - 'slack'
       - 'obsidian'
+      - 'ticktick'
 
       # Security
       - '1password'
@@ -93,6 +94,7 @@ packages:
       - 'claude'
       - 'claude-code'
       - 'lm-studio'
+      - 'memory'
 
       # Database
       - 'dbeaver-community'
