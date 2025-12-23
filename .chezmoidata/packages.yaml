@@ -94,7 +94,6 @@ packages:
       - 'claude'
       - 'claude-code'
       - 'lm-studio'
-      - 'memory'
 
       # Database
       - 'dbeaver-community'
