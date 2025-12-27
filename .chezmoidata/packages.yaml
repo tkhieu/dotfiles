@@ -103,6 +103,7 @@ packages:
 
     pnpm_globals:
       # AI Tools
+      - '@sourcegraph/amp'
       - 'claudekit-cli'
       - 'uipro-cli'
       - '@charmland/crush'
