@@ -28,6 +28,7 @@ packages:
       # DevOps & Cloud
       - 'act'
       - 'awscli'
+      - 'aws-sso-util'
       - 'direnv'
       - 'dnscontrol'
       - 'supabase/tap/supabase'
