@@ -110,4 +110,5 @@ packages:
       - '@charmland/crush'
 
       # DevOps & Cloud
+      - 'vercel'
       - 'wrangler@latest'
