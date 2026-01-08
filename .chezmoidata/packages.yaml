@@ -79,6 +79,7 @@ packages:
       # Security
       - '1password'
       - 'cloudflare-warp'
+      - 'tailscale-app'
 
       # Utilities
       - 'applite'
