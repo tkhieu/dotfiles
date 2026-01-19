@@ -66,6 +66,7 @@ packages:
       - 'shottr'
       - 'visual-studio-code'
       - 'wave'
+      - 'xcodes'
 
       # Productivity
       - 'meetingbar'
