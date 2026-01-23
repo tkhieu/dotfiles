@@ -74,6 +74,7 @@ packages:
       - 'notion-calendar'
       - 'raycast'
       - 'slack'
+      - 'sunsama'
       - 'obsidian'
       - 'ticktick'
 
