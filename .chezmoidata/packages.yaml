@@ -62,6 +62,7 @@ packages:
       - 'droid'
       - 'figma'
       - 'iterm2'
+      - 'markedit'
       - 'postman'
       - 'shottr'
       - 'visual-studio-code'
