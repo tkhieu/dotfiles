@@ -50,6 +50,7 @@ packages:
 
       # AI Tools
       - 'block-goose-cli'
+      - 'Kilo-Org/tap/kilocode'
       - 'opencode'
 
     casks:
