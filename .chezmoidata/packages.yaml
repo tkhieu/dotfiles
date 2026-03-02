@@ -51,7 +51,7 @@ packages:
       # AI Tools
       - 'beads'
       - 'block-goose-cli'
-      - 'Kilo-Org/tap/kilocode'
+      # - 'Kilo-Org/tap/kilocode'
       - 'opencode'
 
     casks:
@@ -69,7 +69,8 @@ packages:
       - 'shottr'
       - 'visual-studio-code'
       - 'wave'
-      - 'xcodes'
+      # - 'xcodes'
+      - 'xcodes-app'
 
       # Productivity
       - 'meetingbar'
@@ -106,6 +107,10 @@ packages:
 
       # Database
       - 'dbeaver-community'
+
+      # Fonts
+      - 'font-noto-sans'
+      - 'font-noto-sans-jp'
 
       # Cloud & AWS
       - 'session-manager-plugin'
