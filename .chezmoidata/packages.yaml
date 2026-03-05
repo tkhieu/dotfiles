@@ -123,5 +123,6 @@ packages:
       - '@charmland/crush'
 
       # DevOps & Cloud
+      - '@googleworkspace/cli'
       - 'vercel'
       - 'wrangler@latest'
