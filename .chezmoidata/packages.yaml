@@ -109,6 +109,7 @@ packages:
       - 'dbeaver-community'
 
       # Fonts
+      - 'font-hack-nerd-font'
       - 'font-noto-sans'
       - 'font-noto-sans-jp'
 
