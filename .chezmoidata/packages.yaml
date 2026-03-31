@@ -73,6 +73,7 @@ packages:
       - 'wave'
       # - 'xcodes'
       - 'xcodes-app'
+      - 'anaconda'
 
       # Productivity
       - 'meetingbar'
