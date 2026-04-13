@@ -1,0 +1,13 @@
+{{ if eq .chezmoi.os "linux" -}}
+#!/bin/bash
+set -euo pipefail
+
+echo "Updating apt packages..."
+sudo apt-get update && sudo apt-get upgrade -y
+
+echo "Updating Homebrew packages..."
+brew update && brew upgrade
+
+echo "Updating pnpm global packages..."
+pnpm update -g
+{{ end -}}

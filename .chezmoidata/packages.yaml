@@ -128,3 +128,78 @@ packages:
       - '@googleworkspace/cli'
       - 'vercel'
       - 'wrangler@latest'
+
+  linux:
+    # Prerequisites for Homebrew on Linux (installed via apt)
+    apt_prerequisites:
+      - 'build-essential'
+      - 'procps'
+      - 'curl'
+      - 'file'
+      - 'git'
+
+    brews:
+      # Core & Shell
+      - 'antigen'
+      - 'fzf'
+      - 'git'
+      - 'htop'
+      - 'jq'
+      - 'neovim'
+      - 'zsh'
+
+      # Git Tools
+      - 'gh'
+      - 'git-filter-repo'
+      - 'git-extras'
+      - 'tig'
+
+      # Package & Version Managers
+      - 'asdf'
+      - 'oven-sh/bun/bun'
+      - 'npm'
+      - 'nvm'
+      - 'pnpm'
+      - 'pyenv'
+      - 'yarn'
+
+      # DevOps & Cloud
+      - 'act'
+      - 'awscli'
+      - 'aws-sso-util'
+      - 'direnv'
+      - 'dnscontrol'
+      - 'supabase/tap/supabase'
+
+      # Development Libraries
+      - 'ffmpeg'
+      - 'grpc'
+      - 'imagemagick'
+      - 'libyaml'
+      - 'mysql-client'
+      - 'zstd'
+
+      # Testing Tools
+      - 'bats-core'
+      - 'shellcheck'
+
+      # Utilities
+      - 'aria2'
+
+      # AI Tools
+      - 'asc'
+      - 'beads'
+      - 'block-goose-cli'
+      - 'opencode'
+
+    pnpm_globals:
+      # AI Tools
+      - '@sourcegraph/amp'
+      - 'claudekit-cli'
+      - 'uipro-cli'
+      - '@charmland/crush'
+
+      # DevOps & Cloud
+      - '@googleworkspace/cli'
+      - 'vercel'
+      - 'wrangler@latest'

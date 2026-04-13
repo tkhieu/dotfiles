@@ -5,125 +5,192 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# --- OS Detection ---
+case "$(uname -s)" in
+  Darwin) _OS="macos" ;;
+  Linux)  _OS="linux" ;;
+  *)      _OS="other" ;;
+esac
 
-# antigen path when using Homebrew:
-source $(brew --prefix)/share/antigen/antigen.zsh
+# --- Homebrew ---
+if [[ "$_OS" == "macos" ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ "$_OS" == "linux" && -d /home/linuxbrew/.linuxbrew ]]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
 
-# Load the oh-my-zsh's library.
-antigen use oh-my-zsh
+# --- Antigen (plugin manager) ---
+if [[ "$_OS" == "macos" ]]; then
+  _antigen_path="$(brew --prefix)/share/antigen/antigen.zsh"
+elif [[ "$_OS" == "linux" ]]; then
+  _antigen_path="/home/linuxbrew/.linuxbrew/share/antigen/antigen.zsh"
+fi
+if [[ -f "$_antigen_path" ]]; then
+  source "$_antigen_path"
 
-# load plugins
-antigen bundle git
-# antigen bundle node  # Disabled: conflicts with zsh-nvm lazy loading
-# antigen bundle npm
-antigen bundle aws
-antigen bundle pip
-antigen bundle terraform
-antigen bundle heroku
-antigen bundle git-extras
-antigen bundle zsh-users/zsh-autosuggestions
-antigen bundle zdharma-continuum/fast-syntax-highlighting
-antigen bundle djui/alias-tips
+  antigen use oh-my-zsh
 
-# Load the theme, something more popular:
-# antigen theme robbyrussell
-antigen theme romkatv/powerlevel10k
+  # plugins
+  antigen bundle git
+  # antigen bundle node  # Disabled: conflicts with zsh-nvm lazy loading
+  # antigen bundle npm
+  antigen bundle aws
+  antigen bundle pip
+  antigen bundle terraform
+  antigen bundle heroku
+  antigen bundle git-extras
+  antigen bundle zsh-users/zsh-autosuggestions
+  antigen bundle zdharma-continuum/fast-syntax-highlighting
+  antigen bundle djui/alias-tips
 
-# more configuration
-# nvm-zsh (lazy loading)
-export NVM_DIR="$HOME/.nvm"
-export NVM_COMPLETION=true
-export NVM_LAZY_LOAD=true
-export NVM_AUTO_USE=true
-antigen bundle lukechilds/zsh-nvm
+  # theme
+  antigen theme romkatv/powerlevel10k
 
-# Tell Antigen that you're done (MUST be after all antigen bundles)
-antigen apply
+  # nvm-zsh (lazy loading)
+  export NVM_DIR="$HOME/.nvm"
+  export NVM_COMPLETION=true
+  export NVM_LAZY_LOAD=true
+  export NVM_AUTO_USE=true
+  antigen bundle lukechilds/zsh-nvm
 
-# Add JBang to environment
-alias j!=jbang
-export PATH="$HOME/.jbang/bin:$PATH"
+  antigen apply
+fi
+unset _antigen_path
 
-# Kube Krew
-export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+# --- JBang ---
+if [[ -d "$HOME/.jbang" ]]; then
+  alias j!=jbang
+  export PATH="$HOME/.jbang/bin:$PATH"
+fi
 
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/hieu.t/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/hieu.t/google-cloud-sdk/path.zsh.inc'; fi
+# --- Kube Krew ---
+if [[ -d "${KREW_ROOT:-$HOME/.krew}" ]]; then
+  export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+fi
 
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/hieu.t/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/hieu.t/google-cloud-sdk/completion.zsh.inc'; fi
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
+# --- Google Cloud SDK (macOS only) ---
+if [[ "$_OS" == "macos" ]]; then
+  if [[ -f '/Users/hieu.t/google-cloud-sdk/path.zsh.inc' ]]; then
+    source '/Users/hieu.t/google-cloud-sdk/path.zsh.inc'
+  fi
+  if [[ -f '/Users/hieu.t/google-cloud-sdk/completion.zsh.inc' ]]; then
+    source '/Users/hieu.t/google-cloud-sdk/completion.zsh.inc'
+  fi
+fi
 
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$PATH:$HOME/.rvm/bin"
+# --- pyenv ---
+if command -v pyenv &>/dev/null; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+  eval "$(pyenv init -)"
+fi
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+# --- RVM ---
+if [[ -d "$HOME/.rvm" ]]; then
+  export PATH="$PATH:$HOME/.rvm/bin"
+fi
+
+# --- p10k ---
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# asdfs
-export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
-export PATH="$PATH:$HOME/.gem/ruby/3.3.0"
-
-## [Completion]
-## Completion scripts setup. Remove the following line to uninstall
-[[ -f /Users/hieu.t/.dart-cli-completion/zsh-config.zsh ]] && . /Users/hieu.t/.dart-cli-completion/zsh-config.zsh || true
-## [/Completion]
-
-# Android
-export ANDROID_HOME=~/Library/Android/sdk
-export NDK_HOME=/Users/hieu.t/Library/Android/sdk/ndk/27.1.12297006
-export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
-        . "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
-    else
-        export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
-    fi
+# --- asdf ---
+if command -v asdf &>/dev/null || [[ -d "${ASDF_DATA_DIR:-$HOME/.asdf}" ]]; then
+  export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 fi
-unset __conda_setup
-# <<< conda initialize <<<
 
-# Added by Windsurf
-export PATH="/Users/hieu.t/.codeium/windsurf/bin:$PATH"
+# --- Ruby gems ---
+if [[ -d "$HOME/.gem/ruby/3.3.0" ]]; then
+  export PATH="$PATH:$HOME/.gem/ruby/3.3.0"
+fi
 
-# pnpm
-export PNPM_HOME="/Users/hieu.t/Library/pnpm"
+# --- Dart CLI completion (macOS only) ---
+if [[ "$_OS" == "macos" && -f /Users/hieu.t/.dart-cli-completion/zsh-config.zsh ]]; then
+  source /Users/hieu.t/.dart-cli-completion/zsh-config.zsh
+fi
+
+# --- Android SDK ---
+if [[ "$_OS" == "macos" ]]; then
+  export ANDROID_HOME=~/Library/Android/sdk
+  export NDK_HOME=/Users/hieu.t/Library/Android/sdk/ndk/27.1.12297006
+elif [[ "$_OS" == "linux" && -d "$HOME/Android/Sdk" ]]; then
+  export ANDROID_HOME="$HOME/Android/Sdk"
+fi
+if [[ -n "$ANDROID_HOME" && -d "$ANDROID_HOME" ]]; then
+  export PATH="$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools"
+fi
+
+# --- SDKMAN ---
+if [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]]; then
+  export SDKMAN_DIR="$HOME/.sdkman"
+  source "$HOME/.sdkman/bin/sdkman-init.sh"
+fi
+
+# --- Conda ---
+if [[ "$_OS" == "macos" ]]; then
+  _conda_bin="/opt/homebrew/Caskroom/miniconda/base/bin/conda"
+  _conda_profile="/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
+  _conda_path="/opt/homebrew/Caskroom/miniconda/base/bin"
+elif [[ "$_OS" == "linux" ]]; then
+  _conda_bin="/home/linuxbrew/.linuxbrew/Caskroom/miniconda/base/bin/conda"
+  _conda_profile="/home/linuxbrew/.linuxbrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
+  _conda_path="/home/linuxbrew/.linuxbrew/Caskroom/miniconda/base/bin"
+fi
+if [[ -f "$_conda_bin" ]]; then
+  __conda_setup="$("$_conda_bin" 'shell.zsh' 'hook' 2>/dev/null)"
+  if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+  elif [[ -f "$_conda_profile" ]]; then
+    source "$_conda_profile"
+  else
+    export PATH="$_conda_path:$PATH"
+  fi
+  unset __conda_setup
+fi
+unset _conda_bin _conda_profile _conda_path
+
+# --- Windsurf/Codeium (macOS only) ---
+if [[ "$_OS" == "macos" && -d "/Users/hieu.t/.codeium/windsurf/bin" ]]; then
+  export PATH="/Users/hieu.t/.codeium/windsurf/bin:$PATH"
+fi
+
+# --- pnpm ---
+export PNPM_HOME="$HOME/.local/share/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
-# pnpm end
 
-# DNSControl
-eval "$(dnscontrol shell-completion zsh)"
+# --- DNSControl ---
+if command -v dnscontrol &>/dev/null; then
+  eval "$(dnscontrol shell-completion zsh)"
+fi
 
+# --- Aliases ---
 alias ccd='claude --dangerously-skip-permissions'
-alias flutter='fvm flutter'
-alias dart='fvm dart'
+if command -v fvm &>/dev/null; then
+  alias flutter='fvm flutter'
+  alias dart='fvm dart'
+fi
 
-# bun completions
-[ -s "/Users/hieu.t/.bun/_bun" ] && source "/Users/hieu.t/.bun/_bun"
+# --- Bun ---
+if [[ -d "$HOME/.bun" ]]; then
+  export BUN_INSTALL="$HOME/.bun"
+  export PATH="$BUN_INSTALL/bin:$PATH"
+  [[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
+elif [[ "$_OS" == "macos" && -s "/Users/hieu.t/.bun/_bun" ]]; then
+  source "/Users/hieu.t/.bun/_bun"
+  export BUN_INSTALL="$HOME/.bun"
+  export PATH="$BUN_INSTALL/bin:$PATH"
+fi
 
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
+# --- LM Studio (macOS only) ---
+if [[ "$_OS" == "macos" && -d "/Users/hieu.t/.lmstudio/bin" ]]; then
+  export PATH="$PATH:/Users/hieu.t/.lmstudio/bin"
+fi
 
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/hieu.t/.lmstudio/bin"
-# End of LM Studio CLI section
+# --- Antigravity (macOS only) ---
+if [[ "$_OS" == "macos" && -d "/Users/hieu.t/.antigravity/antigravity/bin" ]]; then
+  export PATH="/Users/hieu.t/.antigravity/antigravity/bin:$PATH"
+fi
 
-# Added by Antigravity
-export PATH="/Users/hieu.t/.antigravity/antigravity/bin:$PATH"
+unset _OS

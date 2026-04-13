@@ -1,0 +1,37 @@
+{{ if eq .chezmoi.os "linux" -}}
+#!/bin/bash
+set -euo pipefail
+
+# Step 1: Install apt prerequisites for Homebrew
+echo "Installing apt prerequisites..."
+sudo apt-get update
+sudo apt-get install -y \
+{{ range .packages.linux.apt_prerequisites -}}
+  {{ . }} \
+{{ end }}
+
+# Step 2: Install Homebrew if not present
+if ! command -v brew &>/dev/null; then
+  echo "Installing Homebrew..."
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+# Step 3: Install brew packages via generated Brewfile
+brew bundle --file=/dev/stdin <<EOF
+{{ range .packages.linux.brews -}}
+brew {{ . | quote }}
+{{ end -}}
+EOF
+
+{{ if .packages.linux.pnpm_globals -}}
+# Step 4: Install pnpm globals using modular script
+CHEZMOI_SOURCE_DIR="{{ .chezmoi.sourceDir }}"
+# shellcheck source=./install/common.sh
+source "$CHEZMOI_SOURCE_DIR/install/common.sh"
+# shellcheck source=./install/pnpm-globals.sh
+source "$CHEZMOI_SOURCE_DIR/install/pnpm-globals.sh"
+
+install_globals {{ range .packages.linux.pnpm_globals }}{{ . | quote }} {{ end }}
+{{ end -}}
+{{ end -}}
