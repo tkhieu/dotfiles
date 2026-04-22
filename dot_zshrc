@@ -57,6 +57,11 @@ if [[ -f "$_antigen_path" ]]; then
 fi
 unset _antigen_path
 
+# --- User-local binaries (e.g., Claude Code CLI installer target) ---
+if [[ -d "$HOME/.local/bin" ]]; then
+  export PATH="$HOME/.local/bin:$PATH"
+fi
+
 # --- JBang ---
 if [[ -d "$HOME/.jbang" ]]; then
   alias j!=jbang

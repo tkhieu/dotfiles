@@ -103,7 +103,6 @@ packages:
       - 'antigravity'
       - 'block-goose'
       - 'claude'
-      - 'claude-code'
       - 'claude-devtools'
       - 'lm-studio'
       - 'codex'
