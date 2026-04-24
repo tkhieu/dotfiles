@@ -54,6 +54,7 @@ packages:
       - 'beads'
       - 'block-goose-cli'
       # - 'Kilo-Org/tap/kilocode'
+      - 'ollama'
       - 'opencode'
 
     casks:
@@ -193,6 +194,7 @@ packages:
       - 'asc'
       - 'beads'
       - 'block-goose-cli'
+      - 'ollama'
       - 'opencode'
 
     pnpm_globals:

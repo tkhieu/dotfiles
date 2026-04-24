@@ -12,6 +12,13 @@ case "$(uname -s)" in
   *)      _OS="other" ;;
 esac
 
+# --- Git signing: disable 1Password SSH agent when in SSH session ---
+if [[ -n "$SSH_CONNECTION" ]]; then
+  export GIT_CONFIG_COUNT=1
+  export GIT_CONFIG_KEY_0="commit.gpgsign"
+  export GIT_CONFIG_VALUE_0="false"
+fi
+
 # --- Homebrew ---
 if [[ "$_OS" == "macos" ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"

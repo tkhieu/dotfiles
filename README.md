@@ -1,494 +1,159 @@
-# Chezmoi Dotfiles Repository
+# Dotfiles
 
 ![Tests](https://github.com/tkhieu/dotfiles/actions/workflows/test.yml/badge.svg)
 
-Personal macOS dotfiles management with chezmoi, featuring declarative package management, zsh configuration with modern plugins, and integrated AI-assisted development workflow via ClaudeKit.
+Cross-platform dotfiles managed with [chezmoi](https://www.chezmoi.io). Supports macOS, Linux, and WSL2 with declarative package management, zsh configuration, and 1Password SSH commit signing.
 
 ## Quick Start
 
+```bash
+# Install chezmoi and apply dotfiles
+chezmoi init https://github.com/tkhieu/dotfiles.git
+chezmoi diff      # preview changes
+chezmoi apply     # apply configuration
+exec zsh          # reload shell
+```
+
 ### Prerequisites
-- macOS 12+ (Apple Silicon or Intel)
-- Homebrew installed
-- Git with SSH access configured
-- 1Password with SSH agent (for commit signing)
 
-### Installation (5 minutes)
+| Platform | Requirements |
+|----------|-------------|
+| macOS | macOS 12+, Homebrew, Git, 1Password (SSH agent) |
+| Linux | Ubuntu/Debian, Git, curl |
+| WSL2 | Windows 1Password app, Ubuntu in WSL |
 
-```bash
-# Clone repo
-chezmoi init https://github.com/<username>/dotfiles.git
+## What's Managed
 
-# Preview changes
-chezmoi diff
+### Packages (`.chezmoidata/packages.yaml`)
 
-# Apply configuration
-chezmoi apply
+| Category | macOS | Linux | Examples |
+|----------|-------|-------|----------|
+| Homebrew brews | 39 | 39 | git, zsh, neovim, fzf, pyenv, awscli |
+| Homebrew casks | 40 | -- | VS Code, Docker Desktop, Claude, 1Password, Raycast |
+| pnpm globals | 7 | 7 | vercel, wrangler, amp, claudekit-cli |
+| apt prerequisites | -- | 5 | build-essential, curl, procps |
 
-# Verify installation
-zsh --version
-brew list | head -5
-```
+Packages install automatically on `chezmoi apply` via `run_onchange_` scripts triggered by changes to `packages.yaml`.
 
-### First Time Setup
-```bash
-# 1. Clone with chezmoi
-chezmoi init https://github.com/<username>/dotfiles.git
+### Shell (Zsh)
 
-# 2. Review what will change
-chezmoi diff
+`dot_zshrc` -- primary shell config (~197 lines):
 
-# 3. Apply (installs packages, creates dotfiles)
-chezmoi apply
+- **Theme**: Powerlevel10k with instant prompt (< 100ms startup)
+- **Plugins** (via Antigen): git, aws, pip, terraform, heroku, git-extras, zsh-autosuggestions, fast-syntax-highlighting, alias-tips
+- **Version managers**: nvm (lazy-loaded), pyenv, asdf, rvm, sdkman
+- **SDKs**: Android, Google Cloud, Conda, Bun, Dart
+- **Tools**: direnv, dnscontrol, fvm, pnpm, JBang, Krew
+- **Aliases**: `ccd` (claude --dangerously-skip-permissions), `flutter`/`dart` (via fvm)
 
-# 4. Reload shell
-exec zsh
+### Git (`private_dot_gitconfig.tmpl`)
 
-# 5. Verify (should be fast < 100ms)
-time zsh -c "echo test"
-```
+- SSH commit signing via 1Password (ed25519)
+- Cross-platform: macOS (`op-ssh-sign`), WSL (`op-ssh-sign-wsl`), Linux native (`/opt/1Password/op-ssh-sign`)
+- Default branch: `main`, signing enabled by default
 
-## What's Included
+### AWS (`dot_aws/private_config`)
 
-### Package Management (45 packages)
-**Homebrew Brews (22)**:
-- Core: git, zsh, neovim, htop
-- Node.js: npm, yarn, pnpm, nvm
-- Python: pyenv, pip
-- Version managers: asdf, rvm, sdkman
-- Utils: direnv, antigen, git-extras, tig, act
-
-**Homebrew Casks (23)**:
-- Dev: VS Code, iTerm2, Docker Desktop, Postman
-- Browsers: Google Chrome
-- Productivity: Notion, Slack, Raycast, 1Password
-- AI: Claude, Claude Code, LM Studio, Antigravity
-- Database: DBeaver
-- Media: Spotify, Mimestream
-
-### Shell Configuration (Zsh)
-- **Theme**: Powerlevel10k with instant prompt (fast startup)
-- **Plugin Manager**: Antigen with oh-my-zsh plugins
-- **Key plugins**: git, autosuggestions, fast-syntax-highlighting
-- **Version managers**: nvm (lazy), pyenv, asdf, rvm, sdkman
-- **SDKs**: Android, Google Cloud, Conda support
-- **Custom aliases**: `ccd` (claude --dangerously-skip-permissions)
-
-### Development Tools
-- Git SSH signing via 1Password (cryptographic commits)
-- AWS CLI with SSO profiles (peraichi-stg, peraichi-prod)
-- Complete Node.js + Python + Go development setup
-- Docker & container support
-- Cloud SDKs (Android, GCP)
-
-### AI Assistant Framework (ClaudeKit)
-- 17 specialized agents (planner, developer, tester, reviewer, etc.)
-- 60+ slash commands for development workflows
-- 35 skills across 8 categories (dev, design, data, integration, etc.)
-- 4 workflows for orchestration
-- Integrates with development process
+- SSO profiles for peraichi (staging + production)
+- Encrypted at rest via chezmoi `private_` prefix
 
 ## File Structure
 
 ```
 .
-├── .chezmoidata/                  # Template data
-│   └── packages.yaml              # Package definitions
-├── .claude/                       # AI assistant configuration
-│   ├── agents/                    # 17 agent definitions
-│   ├── commands/                  # 60+ slash commands
-│   ├── skills/                    # 35 specialized skills
-│   └── workflows/                 # Orchestration workflows
-├── bin/
-│   └── chezmoi                    # Chezmoi binary
-├── dot_zshrc                      # Primary shell configuration
-├── dot_bashrc                     # Bash configuration
-├── private_dot_gitconfig          # Git config (encrypted, SSH signed)
-├── dot_aws/
-│   └── private_config             # AWS SSO profiles (encrypted)
-├── run_onchange_darwin-install-packages.sh.tmpl  # Auto-install hook
-└── docs/                          # Documentation
-    ├── project-overview-pdr.md    # Project requirements
-    ├── codebase-summary.md        # Codebase structure
-    ├── code-standards.md          # Development standards
-    └── system-architecture.md     # Architecture & flows
+├── .chezmoidata/packages.yaml           # Declarative package lists
+├── dot_zshrc                            # Zsh config (primary shell)
+├── dot_bashrc                           # Bash config (minimal fallback)
+├── dot_asdfrc                           # asdf version manager config
+├── private_dot_gitconfig.tmpl           # Git config (templated per OS)
+├── dot_aws/private_config               # AWS SSO profiles (encrypted)
+├── private_dot_ssh/allowed_signers      # SSH signing verification
+├── run_onchange_darwin-install-*.tmpl   # macOS package install hook
+├── run_onchange_linux-install-*.tmpl    # Linux package install hook
+├── run_darwin-update-packages.sh.tmpl   # macOS update hook
+├── run_linux-update-packages.sh.tmpl    # Linux update hook
+├── install/                             # Modular install scripts
+│   ├── common.sh                        #   Shared utilities
+│   ├── brew-packages.sh                 #   Brewfile generation
+│   └── pnpm-globals.sh                  #   pnpm global installer
+├── tests/                               # 44 BATS tests
+│   ├── smoke.bats                       #   Infrastructure smoke tests
+│   ├── config/                          #   Config validation (23 tests)
+│   └── install/                         #   Install script unit tests (19 tests)
+├── .github/workflows/test.yml           # CI: lint + test (macOS & Ubuntu)
+├── Makefile                             # Test orchestration
+└── docs/                                # Extended documentation
 ```
 
-### Chezmoi Naming
-- `dot_*` → becomes `.*` in home dir (e.g., `dot_zshrc` → `~/.zshrc`)
-- `private_dot_*` → encrypted at rest (e.g., `private_dot_gitconfig`)
-- `run_onchange_*` → executes when referenced file changes
+### Chezmoi Naming Conventions
 
-## Configuration Guide
+| Prefix | Meaning | Example |
+|--------|---------|---------|
+| `dot_` | Becomes `.` in `$HOME` | `dot_zshrc` -> `~/.zshrc` |
+| `private_dot_` | Encrypted at rest | `private_dot_gitconfig.tmpl` |
+| `run_onchange_` | Runs when data changes | Package install hooks |
+| `run_` | Runs on every apply | Package update hooks |
+| `.tmpl` | Chezmoi template | OS-conditional rendering |
 
-### Adding Packages
+## Development
 
-Edit `.chezmoidata/packages.yaml`:
-```yaml
-packages:
-  darwin:
-    brews:
-      - ripgrep    # Add new tools alphabetically
-    casks:
-      - raycast    # Add new apps alphabetically
-```
-
-Then apply:
-```bash
-chezmoi apply
-```
-
-### Customizing Shell
-
-Edit `dot_zshrc`:
-```bash
-# Add custom aliases
-alias myalias='command'
-
-# Add custom functions
-function myfunc() {
-  # your code
-}
-```
-
-Reload:
-```bash
-exec zsh
-```
-
-### Managing Git Configuration
-
-Edit `private_dot_gitconfig`:
-```ini
-[user]
-  name = Your Name
-  email = your.email@example.com
-```
-
-Auto-encrypted by chezmoi (marked as `private_dot_*`).
-
-### AWS Configuration
-
-Edit `dot_aws/private_config`:
-```ini
-[profile peraichi-stg]
-sso_start_url = https://...
-sso_region = ap-southeast-1
-```
-
-### Version Managers
-
-Configured in `dot_zshrc`:
-- **Node.js (nvm)**: Lazy loaded (improve shell startup)
-- **Python (pyenv)**: Initialized after nvm
-- **Ruby (rvm)**: Initialized last
-- **Multiple (asdf)**: Fallback for other languages
-
-To use:
-```bash
-# Node versions
-nvm install 20
-nvm use 20
-
-# Python versions
-pyenv install 3.11.0
-pyenv local 3.11.0
-
-# Check active versions
-node --version
-python --version
-ruby --version
-```
-
-## Daily Workflows
-
-### Updating Configuration
+### Testing
 
 ```bash
-# Edit any file in repo
-chezmoi edit ~/.zshrc
-# or
-vim /Users/hieu.t/.local/share/chezmoi/dot_zshrc
-
-# Apply changes
-chezmoi apply
-
-# Test (reload shell)
-exec zsh
+make test              # lint + all 44 BATS tests
+make lint              # shellcheck (bash + install scripts)
+make test-config       # config validation tests only
+make test-install      # install script unit tests only
+make validate-configs  # quick syntax check (zsh, bash, YAML)
+make ci                # full CI pipeline locally
 ```
 
-### Adding New Packages
+### CI Pipeline (GitHub Actions)
 
-```bash
-# Edit packages
-chezmoi edit ~/.chezmoidata/packages.yaml
-# Add package name to brews or casks
+4 parallel jobs on push/PR to `main`:
+1. **Lint** -- ShellCheck on shell scripts
+2. **Test (macOS)** -- BATS tests + config validation
+3. **Test (Ubuntu)** -- BATS tests
+4. **Template Validation** -- chezmoi template rendering
 
-# Apply (auto-installs via brew bundle)
-chezmoi apply
+### Adding a Package
 
-# Verify
-brew list | grep <package-name>
-```
+1. Edit `.chezmoidata/packages.yaml` -- add to the appropriate section alphabetically
+2. Run `chezmoi apply` -- triggers `run_onchange_` hook, installs via `brew bundle`
+3. Commit: `git commit -m "feat(packages): add <package-name>"`
 
-### Using AI Assistant (ClaudeKit)
+### Modifying Shell Config
 
-```bash
-# Plan implementation
-/plan implement new feature
-
-# Write code
-/code with my implementation plan
-
-# Run tests
-/test
-
-# Review code
-/fix any issues
-
-# Update docs
-/docs:update
-```
-
-### Git Workflow
-
-```bash
-# Check what changed
-chezmoi diff
-
-# Commit changes (SSH signed via 1Password)
-cd /Users/hieu.t/.local/share/chezmoi
-git add .
-git commit -m "feat(zshrc): add custom alias"
-
-# Push
-git push
-
-# Sync on other machines
-chezmoi pull
-chezmoi apply
-```
+1. Edit `dot_zshrc`
+2. Run `chezmoi apply && exec zsh`
+3. Verify startup: `time zsh -c "echo test"` (target < 100ms)
 
 ## Troubleshooting
 
-### Slow Shell Startup
-
-Check shell startup time:
-```bash
-time zsh -c "echo test"
-```
-
-If > 200ms, debug:
-```bash
-# Profile startup
-zsh -X -i 2>&1 | head -20
-
-# Disable plugins one by one in dot_zshrc
-```
-
-### Packages Not Installing
-
-```bash
-# Check brew is working
-brew --version
-brew doctor
-
-# Manual install via bundle
-brew bundle --file=/dev/stdin <<EOF
-brew "git"
-cask "google-chrome"
-EOF
-```
-
-### Git Signing Not Working
-
-```bash
-# Verify 1Password is running
-ssh-add -l
-
-# Check git config
-git config user.signingkey
-
-# Test signing
-git commit --allow-empty -m "test" -S
-```
-
-### SSH Connection Issues
-
-```bash
-# Verify SSH keys in 1Password
-ssh-add -l
-
-# Test SSH access
-ssh -T git@github.com
-
-# Check SSH config
-cat ~/.ssh/config
-```
+| Problem | Diagnosis |
+|---------|-----------|
+| Slow shell startup (> 200ms) | `zsh -X -i 2>&1 \| head -20` to profile |
+| Packages not installing | `brew doctor`, check `packages.yaml` syntax |
+| Git signing fails | Verify 1Password is running: `ssh-add -l` |
+| SSH issues | `ssh -T git@github.com` to test connectivity |
 
 ## Common Commands
 
 ```bash
-# Chezmoi essentials
-chezmoi apply              # Apply all configurations
-chezmoi diff               # Show what would change
-chezmoi pull               # Pull & apply latest
-chezmoi cd                 # Open repo directory
-chezmoi edit <file>        # Edit managed file
-chezmoi remove <file>      # Stop managing file
-
-# Shell
-exec zsh                   # Reload zsh
-source ~/.zshrc            # Reload config
-alias | grep <pattern>     # List aliases
-
-# Packages
-brew list                  # List installed packages
-brew search <term>         # Search for package
-brew install <pkg>         # Install single package
-brew upgrade               # Upgrade all packages
-
-# Git
-git status                 # Check repo status
-git log --oneline          # View commit history
-git diff                   # Show changes
-```
-
-## Documentation
-
-- **[Project Overview & PDR](docs/project-overview-pdr.md)** - Requirements & goals
-- **[Codebase Summary](docs/codebase-summary.md)** - File structure & organization
-- **[Code Standards](docs/code-standards.md)** - Development guidelines
-- **[System Architecture](docs/system-architecture.md)** - Architecture & data flows
-
-## Security
-
-### Secrets Management
-- No API keys in git (all in 1Password)
-- Private files encrypted: `private_dot_*`
-- SSH signing: Cryptographic commit signing
-- AWS credentials: SSO via 1Password
-
-### Safe Operations
-```bash
-# Always review before applying
-chezmoi diff
-
-# Dry run before applying
-chezmoi apply --dry-run
-
-# Verify integrity
-chezmoi verify
-```
-
-## Performance
-
-### Shell Startup
-- **Target**: < 100ms with lazy loading
-- **Optimization**: nvm lazy loads on first use
-- **Measurement**: `time zsh -c "echo test"`
-
-### Package Installation
-- **Full setup**: ~10-15 minutes (network dependent)
-- **Incremental**: Only new packages install
-- **Atomic**: All or nothing via brew bundle
-
-## Development Workflow
-
-This repo uses ClaudeKit for AI-assisted development:
-
-1. **Plan**: `/plan implement feature` - Create implementation plan
-2. **Code**: `/code with plan` - Implement with AI assistance
-3. **Test**: `/test` - Run tests and analyze results
-4. **Review**: `/fix any issues` - Code quality review
-5. **Docs**: `/docs:update` - Update documentation
-
-### Code Standards
-- **YANGI**: You Aren't Gonna Need It (no over-engineering)
-- **KISS**: Keep It Simple, Stupid (clarity over cleverness)
-- **DRY**: Don't Repeat Yourself (reuse code)
-- **Files**: Max 200 lines per file
-- **Naming**: kebab-case for files
-
-## Contributing
-
-### Making Changes
-```bash
-# Create feature branch
-git checkout -b feature/description
-
-# Make changes
-chezmoi edit <file>
-chezmoi apply
-
-# Commit (SSH signed)
-git commit -m "feat(component): description"
-
-# Push & create PR
-git push origin feature/description
-```
-
-### Testing Changes
-```bash
-# Before committing
-chezmoi diff              # Review changes
-chezmoi verify            # Check integrity
-exec zsh                  # Test shell config
-
-# Common issues
-shellcheck <script>       # Check shell syntax
-```
-
-## Updating
-
-### Pull Latest Changes
-```bash
-# From any machine
-chezmoi pull           # Pull latest
-chezmoi diff           # Review changes
-chezmoi apply          # Apply
-
-# Reload shell if zshrc changed
-exec zsh
-```
-
-### Upgrading Packages
-```bash
-# Update package list
-brew update
-
-# Upgrade installed packages
-brew upgrade
-
-# Update casks
-brew upgrade --cask
-
-# Cleanup old versions
-brew cleanup
+chezmoi apply          # apply all configurations
+chezmoi diff           # preview pending changes
+chezmoi pull           # pull + apply latest from remote
+chezmoi edit <file>    # edit a managed file
+chezmoi cd             # cd to chezmoi source directory
 ```
 
 ## References
 
-- [Chezmoi Official Docs](https://www.chezmoi.io)
-- [Zsh Documentation](https://zsh.sourceforge.io)
-- [Antigen - Zsh Plugin Manager](https://github.com/zsh-users/antigen)
-- [Powerlevel10k - Zsh Theme](https://github.com/romkatv/powerlevel10k)
-- [Homebrew Package Manager](https://brew.sh)
-
-## License
-
-Personal dotfiles repository. Feel free to use as template for your own setup.
+- [Chezmoi Docs](https://www.chezmoi.io)
+- [Powerlevel10k](https://github.com/romkatv/powerlevel10k)
+- [Antigen](https://github.com/zsh-users/antigen)
+- [Homebrew](https://brew.sh)
 
 ## Author
 
 **Hieu Tran** (tr.kimhieu@gmail.com)
-
-- SSH key signing via 1Password
-- Git default branch: main
-- SSH-signed commits
-
----
-
-**Last Updated**: 2025-12-03
-**Version**: 1.0
-
-For detailed information, see documentation in `./docs/`
