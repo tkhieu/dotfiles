@@ -121,6 +121,7 @@ packages:
     pnpm_globals:
       # AI Tools
       - '@sourcegraph/amp'
+      - '@openai/codex'
       - 'claudekit-cli'
       - 'uipro-cli'
       - '@charmland/crush'
@@ -197,6 +198,7 @@ packages:
     pnpm_globals:
       # AI Tools
       - '@sourcegraph/amp'
+      - '@openai/codex'
       - 'claudekit-cli'
       - 'uipro-cli'
       - '@charmland/crush'
