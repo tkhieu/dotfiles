@@ -126,6 +126,7 @@ packages:
       - 'claudekit-cli'
       - 'uipro-cli'
       - '@charmland/crush'
+      - '@kaitranntt/ccs'
 
       # DevOps & Cloud
       - '@googleworkspace/cli'
@@ -204,6 +205,7 @@ packages:
       - 'claudekit-cli'
       - 'uipro-cli'
       - '@charmland/crush'
+      - '@kaitranntt/ccs'
 
       # DevOps & Cloud
       - '@googleworkspace/cli'
