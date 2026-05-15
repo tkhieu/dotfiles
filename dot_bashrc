@@ -1,13 +1,13 @@
+# ~/.bashrc — minimal bash fallback (primary interactive shell is zsh; see dot_zshrc)
 
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+# RVM to PATH (kept last among PATH changes, per RVM scripting guidance)
 export PATH="$PATH:$HOME/.rvm/bin"
-source "$HOME/.rover/env"
 
+# Tool environment hooks. Each is guarded so a fresh machine that does not
+# have the tool installed does not break bash startup with a failed source.
+[[ -s "$HOME/.rover/env" ]] && source "$HOME/.rover/env"
+[[ -s "$HOME/.langflow/uv/env" ]] && . "$HOME/.langflow/uv/env"
+[[ -s "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
 
-. "$HOME/.langflow/uv/env"
-. "$HOME/.cargo/env"
-
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:$HOME/.lmstudio/bin"
-# End of LM Studio CLI section
-
+# LM Studio CLI (lms)
+[[ -d "$HOME/.lmstudio/bin" ]] && export PATH="$PATH:$HOME/.lmstudio/bin"
