@@ -38,9 +38,9 @@ if [[ -f "$_antigen_path" ]]; then
   antigen use oh-my-zsh
 
   # plugins
+  # Note: oh-my-zsh node/npm plugins intentionally omitted — they conflict
+  # with zsh-nvm lazy loading (loaded below).
   antigen bundle git
-  # antigen bundle node  # Disabled: conflicts with zsh-nvm lazy loading
-  # antigen bundle npm
   antigen bundle aws
   antigen bundle pip
   antigen bundle terraform

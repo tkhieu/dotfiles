@@ -56,7 +56,6 @@ packages:
       - 'asc'
       - 'beads'
       - 'block-goose-cli'
-      # - 'Kilo-Org/tap/kilocode'
       - 'ollama'
       - 'opencode'
 
@@ -75,7 +74,6 @@ packages:
       - 'shottr'
       - 'visual-studio-code'
       - 'wave'
-      # - 'xcodes'
       - 'xcodes-app'
       - 'anaconda'
 
