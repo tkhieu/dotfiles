@@ -17,7 +17,7 @@ Personal macOS dotfiles management system using Chezmoi with:
 ## File Structure
 
 ```
-/Users/hieu.t/.local/share/chezmoi/
+~/.local/share/chezmoi/
 ├── .chezmoidata/
 │   └── packages.yaml                          # Homebrew package definitions
 ├── .claude/                                   # AI assistant configuration

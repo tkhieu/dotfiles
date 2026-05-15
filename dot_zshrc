@@ -82,11 +82,11 @@ fi
 
 # --- Google Cloud SDK (macOS only) ---
 if [[ "$_OS" == "macos" ]]; then
-  if [[ -f '/Users/hieu.t/google-cloud-sdk/path.zsh.inc' ]]; then
-    source '/Users/hieu.t/google-cloud-sdk/path.zsh.inc'
+  if [[ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]]; then
+    source "$HOME/google-cloud-sdk/path.zsh.inc"
   fi
-  if [[ -f '/Users/hieu.t/google-cloud-sdk/completion.zsh.inc' ]]; then
-    source '/Users/hieu.t/google-cloud-sdk/completion.zsh.inc'
+  if [[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]]; then
+    source "$HOME/google-cloud-sdk/completion.zsh.inc"
   fi
 fi
 
@@ -116,14 +116,14 @@ if [[ -d "$HOME/.gem/ruby/3.3.0" ]]; then
 fi
 
 # --- Dart CLI completion (macOS only) ---
-if [[ "$_OS" == "macos" && -f /Users/hieu.t/.dart-cli-completion/zsh-config.zsh ]]; then
-  source /Users/hieu.t/.dart-cli-completion/zsh-config.zsh
+if [[ "$_OS" == "macos" && -f "$HOME/.dart-cli-completion/zsh-config.zsh" ]]; then
+  source "$HOME/.dart-cli-completion/zsh-config.zsh"
 fi
 
 # --- Android SDK ---
 if [[ "$_OS" == "macos" ]]; then
   export ANDROID_HOME=~/Library/Android/sdk
-  export NDK_HOME=/Users/hieu.t/Library/Android/sdk/ndk/27.1.12297006
+  export NDK_HOME="$HOME/Library/Android/sdk/ndk/27.1.12297006"
 elif [[ "$_OS" == "linux" && -d "$HOME/Android/Sdk" ]]; then
   export ANDROID_HOME="$HOME/Android/Sdk"
 fi
@@ -161,8 +161,8 @@ fi
 unset _conda_bin _conda_profile _conda_path
 
 # --- Windsurf/Codeium (macOS only) ---
-if [[ "$_OS" == "macos" && -d "/Users/hieu.t/.codeium/windsurf/bin" ]]; then
-  export PATH="/Users/hieu.t/.codeium/windsurf/bin:$PATH"
+if [[ "$_OS" == "macos" && -d "$HOME/.codeium/windsurf/bin" ]]; then
+  export PATH="$HOME/.codeium/windsurf/bin:$PATH"
 fi
 
 # --- pnpm ---
@@ -189,20 +189,20 @@ if [[ -d "$HOME/.bun" ]]; then
   export BUN_INSTALL="$HOME/.bun"
   export PATH="$BUN_INSTALL/bin:$PATH"
   [[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
-elif [[ "$_OS" == "macos" && -s "/Users/hieu.t/.bun/_bun" ]]; then
-  source "/Users/hieu.t/.bun/_bun"
+elif [[ "$_OS" == "macos" && -s "$HOME/.bun/_bun" ]]; then
+  source "$HOME/.bun/_bun"
   export BUN_INSTALL="$HOME/.bun"
   export PATH="$BUN_INSTALL/bin:$PATH"
 fi
 
 # --- LM Studio (macOS only) ---
-if [[ "$_OS" == "macos" && -d "/Users/hieu.t/.lmstudio/bin" ]]; then
-  export PATH="$PATH:/Users/hieu.t/.lmstudio/bin"
+if [[ "$_OS" == "macos" && -d "$HOME/.lmstudio/bin" ]]; then
+  export PATH="$PATH:$HOME/.lmstudio/bin"
 fi
 
 # --- Antigravity (macOS only) ---
-if [[ "$_OS" == "macos" && -d "/Users/hieu.t/.antigravity/antigravity/bin" ]]; then
-  export PATH="/Users/hieu.t/.antigravity/antigravity/bin:$PATH"
+if [[ "$_OS" == "macos" && -d "$HOME/.antigravity/antigravity/bin" ]]; then
+  export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 fi
 
 unset _OS
