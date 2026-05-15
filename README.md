@@ -37,7 +37,7 @@ Packages install automatically on `chezmoi apply` via `run_onchange_` scripts tr
 
 ### Shell (Zsh)
 
-`dot_zshrc` -- primary shell config (~197 lines):
+`dot_zshrc` -- primary shell config (~215 lines):
 
 - **Theme**: Powerlevel10k with instant prompt (< 100ms startup)
 - **Plugins** (via Antigen): git, aws, pip, terraform, heroku, git-extras, zsh-autosuggestions, fast-syntax-highlighting, alias-tips
@@ -55,7 +55,7 @@ Packages install automatically on `chezmoi apply` via `run_onchange_` scripts tr
 ### AWS (`dot_aws/private_config`)
 
 - SSO profiles for peraichi (staging + production)
-- Encrypted at rest via chezmoi `private_` prefix
+- Stored with `0600` permissions via chezmoi `private_` prefix. **Not encrypted** -- chezmoi `private_` only sets file mode, it does not encrypt. The file contains only SSO start URLs and account IDs (no long-lived secrets). Use the `encrypted_` prefix + age/gpg if real secrets are ever added.
 
 ## File Structure
 
@@ -66,23 +66,21 @@ Packages install automatically on `chezmoi apply` via `run_onchange_` scripts tr
 ├── dot_bashrc                           # Bash config (minimal fallback)
 ├── dot_asdfrc                           # asdf version manager config
 ├── private_dot_gitconfig.tmpl           # Git config (templated per OS)
-├── dot_aws/private_config               # AWS SSO profiles (encrypted)
+├── dot_aws/private_config               # AWS SSO profiles (chmod 600, not encrypted)
 ├── private_dot_ssh/allowed_signers      # SSH signing verification
 ├── run_onchange_darwin-install-*.tmpl   # macOS package install hook
 ├── run_onchange_linux-install-*.tmpl    # Linux package install hook
 ├── run_darwin-update-packages.sh.tmpl   # macOS update hook
 ├── run_linux-update-packages.sh.tmpl    # Linux update hook
 ├── install/                             # Modular install scripts
-│   ├── common.sh                        #   Shared utilities
-│   ├── brew-packages.sh                 #   Brewfile generation
+│   ├── common.sh                        #   Shared utilities (logging, pnpm guard)
 │   └── pnpm-globals.sh                  #   pnpm global installer
-├── tests/                               # 44 BATS tests
+├── tests/                               # BATS test suites
 │   ├── smoke.bats                       #   Infrastructure smoke tests
-│   ├── config/                          #   Config validation (23 tests)
-│   └── install/                         #   Install script unit tests (19 tests)
+│   ├── config/                          #   Config validation
+│   └── install/                         #   Install script unit tests
 ├── .github/workflows/test.yml           # CI: lint + test (macOS & Ubuntu)
-├── Makefile                             # Test orchestration
-└── docs/                                # Extended documentation
+└── Makefile                             # Test orchestration
 ```
 
 ### Chezmoi Naming Conventions
@@ -100,7 +98,7 @@ Packages install automatically on `chezmoi apply` via `run_onchange_` scripts tr
 ### Testing
 
 ```bash
-make test              # lint + all 44 BATS tests
+make test              # lint + all BATS tests
 make lint              # shellcheck (bash + install scripts)
 make test-config       # config validation tests only
 make test-install      # install script unit tests only
