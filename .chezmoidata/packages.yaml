@@ -1,6 +1,8 @@
 packages:
   darwin:
-    brews:
+    # Canonical brew list. Linux reuses it via the *brews alias below
+    # (darwin and linux installed identical brews — single source of truth).
+    brews: &brews
       # Core & Shell
       - 'antigen'
       - 'fzf'
@@ -120,7 +122,8 @@ packages:
       # Cloud & AWS
       - 'session-manager-plugin'
 
-    pnpm_globals:
+    # Canonical pnpm global list, reused by linux via the *pnpm_globals alias.
+    pnpm_globals: &pnpm_globals
       # AI Tools
       - '@sourcegraph/amp'
       - '@openai/codex'
@@ -145,75 +148,5 @@ packages:
       - 'file'
       - 'git'
 
-    brews:
-      # Core & Shell
-      - 'antigen'
-      - 'fzf'
-      - 'git'
-      - 'htop'
-      - 'jq'
-      - 'neovim'
-      - 'zsh'
-
-      # Git Tools
-      - 'gh'
-      - 'git-filter-repo'
-      - 'git-extras'
-      - 'tig'
-
-      # Package & Version Managers
-      - 'asdf'
-      - 'oven-sh/bun/bun'
-      - 'npm'
-      - 'nvm'
-      - 'pipx'
-      - 'pnpm'
-      - 'pyenv'
-      - 'yarn'
-
-      # DevOps & Cloud
-      - 'act'
-      - 'awscli'
-      - 'aws-sso-util'
-      - 'direnv'
-      - 'dnscontrol'
-      - 'supabase/tap/supabase'
-
-      # Development Libraries
-      - 'ffmpeg'
-      - 'grpc'
-      - 'imagemagick'
-      - 'libyaml'
-      - 'mysql-client'
-      - 'zstd'
-
-      # Testing Tools
-      - 'bats-core'
-      - 'semgrep'
-      - 'shellcheck'
-
-      # Utilities
-      - 'aria2'
-
-      # AI Tools
-      - 'asc'
-      - 'beads'
-      - 'block-goose-cli'
-      - 'ollama'
-      - 'opencode'
-
-    pnpm_globals:
-      # AI Tools
-      - '@sourcegraph/amp'
-      - '@openai/codex'
-      - 'claudekit-cli'
-      - 'uipro-cli'
-      - '@charmland/crush'
-      - '@kaitranntt/ccs'
-      - '@pencil.dev/cli'
-      - 'ecc-universal'
-
-      # DevOps & Cloud
-      - '@googleworkspace/cli'
-      - 'vercel'
-      - 'wrangler@latest'
+    brews: *brews
+    pnpm_globals: *pnpm_globals
