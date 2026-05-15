@@ -40,6 +40,17 @@ teardown() {
   [[ ":$PATH:" == *":$PNPM_HOME/bin:"* ]]
 }
 
+@test "install_global enables dangerouslyAllowAllBuilds before installing" {
+  local calls="$TEST_TEMP_DIR/pnpm-calls.log"
+  pnpm() { echo "$*" >> "$calls"; return 0; }
+  export -f pnpm
+
+  run install_global "sharp"
+  [ "$status" -eq 0 ]
+  grep -q "config set dangerouslyAllowAllBuilds true" "$calls"
+  grep -q "install -g sharp" "$calls"
+}
+
 @test "install_global calls pnpm with correct args" {
   mock_pnpm
 

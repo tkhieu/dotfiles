@@ -26,11 +26,23 @@ ensure_pnpm_global_path() {
   done
 }
 
+# Auto-approve dependency build scripts.
+# pnpm 10+ blocks dependency build scripts (e.g. sharp, esbuild) and shows an
+# interactive "Choose which packages to build" prompt, which hangs/fails in
+# chezmoi's non-interactive shell. Setting dangerouslyAllowAllBuilds lets all
+# build scripts run without prompting. Trade-off: arbitrary postinstall scripts
+# from (transitive) deps execute — acceptable here since the global package
+# list is curated in .chezmoidata/packages.yaml. Idempotent.
+ensure_pnpm_build_approval() {
+  pnpm config set dangerouslyAllowAllBuilds true >/dev/null 2>&1 || true
+}
+
 # Install single global package
 install_global() {
   local package="$1"
   ensure_pnpm || return 1
   ensure_pnpm_global_path
+  ensure_pnpm_build_approval
   pnpm install -g "$package"
 }
 
