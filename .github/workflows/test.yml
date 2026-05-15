@@ -18,10 +18,7 @@ jobs:
         run: sudo apt-get install -y shellcheck
 
       - name: Run ShellCheck
-        run: |
-          shellcheck -s bash -e SC1091 dot_bashrc
-          shellcheck -x install/*.sh 2>/dev/null || true
-          echo "Lint passed"
+        run: make ci-lint
 
   test-macos:
     name: Test (macOS)

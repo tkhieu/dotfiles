@@ -9,8 +9,13 @@ SHELLCHECK := shellcheck
 # SC2296: zsh prompt expansion ${(%):-%n}
 # SC1090: non-constant source (dynamic paths)
 # SC1091: not following external sources
-# SC2148: missing shebang (zsh files sourced, not executed)
+# SC2148: missing shebang (rc files sourced, not executed)
 SC_EXCLUDES := -e SC2296 -e SC1090 -e SC1091 -e SC2148
+# Extra excludes for dot_zshrc when parsed by the bash-based shellcheck
+# SC2181: $? check (acceptable in the conda init block)
+SC_ZSH_EXCLUDES := $(SC_EXCLUDES) -e SC2181
+# SC2329: helper functions invoked indirectly via `export -f`
+SC_TEST_EXCLUDES := -e SC1091 -e SC2329
 
 # Test all (recursive)
 test: lint
@@ -23,12 +28,12 @@ lint: lint-bash lint-install
 # Lint bash/zsh config files (with zsh-specific exclusions)
 lint-bash:
 	@$(SHELLCHECK) -s bash $(SC_EXCLUDES) dot_bashrc
-	@$(SHELLCHECK) -s bash $(SC_EXCLUDES) dot_zshrc || true
+	@$(SHELLCHECK) -s bash $(SC_ZSH_EXCLUDES) dot_zshrc
 
 # Lint install scripts (strict)
 lint-install:
-	@$(SHELLCHECK) -x install/*.sh 2>/dev/null || true
-	@$(SHELLCHECK) -x tests/test_helper/*.bash 2>/dev/null || true
+	@$(SHELLCHECK) -x -e SC1091 install/*.sh
+	@$(SHELLCHECK) -x $(SC_TEST_EXCLUDES) tests/test_helper/*.bash
 
 # Full check
 check: test
@@ -56,10 +61,8 @@ test-install:
 ci: ci-lint ci-test validate-configs
 	@echo "CI passed"
 
-# CI lint (fails on any error, excludes info-level SC1091)
-ci-lint:
-	@$(SHELLCHECK) -s bash -e SC1091 dot_bashrc
-	@$(SHELLCHECK) -x install/*.sh 2>/dev/null || true
+# CI lint — identical to local lint (single source of truth, no divergence)
+ci-lint: lint
 
 # CI test (all tests must pass)
 ci-test:
