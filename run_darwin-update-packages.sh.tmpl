@@ -6,5 +6,16 @@ echo "Updating Homebrew packages..."
 brew update && brew upgrade
 
 echo "Updating pnpm global packages..."
+# chezmoi runs this in a non-interactive shell that does not source ~/.zshrc,
+# so replicate the PNPM_HOME/PATH setup — pnpm refuses global operations when
+# its global bin dir is not on PATH. pnpm 11+ uses "$PNPM_HOME/bin" as the
+# global bin dir; "$PNPM_HOME" is kept for pre-11 layout compatibility.
+export PNPM_HOME="$HOME/.local/share/pnpm"
+for dir in "$PNPM_HOME/bin" "$PNPM_HOME"; do
+  case ":$PATH:" in
+    *":$dir:"*) ;;
+    *) export PATH="$dir:$PATH" ;;
+  esac
+done
 pnpm update -g
 {{ end -}}
