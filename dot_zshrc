@@ -94,6 +94,12 @@ fi
 if command -v pyenv &>/dev/null; then
   export PYENV_ROOT="$HOME/.pyenv"
   [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+  # Clear stale pyenv-rehash lock if no rehash process is actually running.
+  # Why: a killed/crashed rehash leaves .pyenv-shim behind, blocking subsequent
+  # rehashes for 60s on every shell startup.
+  if [[ -e "$PYENV_ROOT/shims/.pyenv-shim" ]] && ! pgrep -f 'pyenv-rehash' >/dev/null 2>&1; then
+    rm -f "$PYENV_ROOT/shims/.pyenv-shim"
+  fi
   eval "$(pyenv init -)"
 fi
 
