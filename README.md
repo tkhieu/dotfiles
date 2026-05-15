@@ -70,8 +70,7 @@ Packages install automatically on `chezmoi apply` via `run_onchange_` scripts tr
 ├── private_dot_ssh/allowed_signers      # SSH signing verification
 ├── run_onchange_darwin-install-*.tmpl   # macOS package install hook
 ├── run_onchange_linux-install-*.tmpl    # Linux package install hook
-├── run_darwin-update-packages.sh.tmpl   # macOS update hook
-├── run_linux-update-packages.sh.tmpl    # Linux update hook
+├── run_update-packages.sh.tmpl          # Package update hook (macOS + Linux)
 ├── install/                             # Modular install scripts
 │   ├── common.sh                        #   Shared utilities (logging, pnpm guard)
 │   └── pnpm-globals.sh                  #   pnpm global installer
