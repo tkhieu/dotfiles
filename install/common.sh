@@ -17,14 +17,6 @@ log_error() {
   echo "[ERROR] $*" >&2
 }
 
-# Ensure brew is available
-ensure_brew() {
-  if ! command_exists brew; then
-    log_error "Homebrew not installed"
-    return 1
-  fi
-}
-
 # Ensure pnpm is available
 ensure_pnpm() {
   if ! command_exists pnpm; then

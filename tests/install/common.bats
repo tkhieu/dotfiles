@@ -35,16 +35,6 @@ teardown() {
   [[ "$output" == *"error message"* ]]
 }
 
-@test "ensure_brew succeeds when brew available" {
-  # brew is available on this macOS system
-  if command -v brew >/dev/null 2>&1; then
-    run ensure_brew
-    [ "$status" -eq 0 ]
-  else
-    skip "brew not installed"
-  fi
-}
-
 @test "ensure_pnpm succeeds when pnpm available" {
   # pnpm is available on this system
   if command -v pnpm >/dev/null 2>&1; then
