@@ -15,6 +15,31 @@ teardown() {
   teardown_temp_dir
 }
 
+@test "ensure_pnpm_global_path adds PNPM_HOME/bin to PATH when missing" {
+  export PNPM_HOME="$TEST_TEMP_DIR/pnpm"
+  export PATH="/usr/bin:/bin"
+  ensure_pnpm_global_path
+  [[ ":$PATH:" == *":$PNPM_HOME/bin:"* ]]
+  [[ ":$PATH:" == *":$PNPM_HOME:"* ]]
+}
+
+@test "ensure_pnpm_global_path is idempotent" {
+  export PNPM_HOME="$TEST_TEMP_DIR/pnpm"
+  export PATH="/usr/bin:/bin"
+  ensure_pnpm_global_path
+  local after_first="$PATH"
+  ensure_pnpm_global_path
+  [ "$PATH" = "$after_first" ]
+}
+
+@test "ensure_pnpm_global_path defaults PNPM_HOME when unset" {
+  unset PNPM_HOME
+  export PATH="/usr/bin:/bin"
+  ensure_pnpm_global_path
+  [ "$PNPM_HOME" = "$HOME/.local/share/pnpm" ]
+  [[ ":$PATH:" == *":$PNPM_HOME/bin:"* ]]
+}
+
 @test "install_global calls pnpm with correct args" {
   mock_pnpm
 
