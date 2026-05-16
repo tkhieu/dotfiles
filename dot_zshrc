@@ -171,13 +171,6 @@ if [[ "$_OS" == "macos" && -d "$HOME/.codeium/windsurf/bin" ]]; then
   export PATH="$HOME/.codeium/windsurf/bin:$PATH"
 fi
 
-# --- pnpm ---
-export PNPM_HOME="$HOME/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-
 # --- DNSControl ---
 if command -v dnscontrol &>/dev/null; then
   eval "$(dnscontrol shell-completion zsh)"
@@ -212,3 +205,11 @@ if [[ "$_OS" == "macos" && -d "$HOME/.antigravity/antigravity/bin" ]]; then
 fi
 
 unset _OS
+
+# pnpm
+export PNPM_HOME="$HOME/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME/bin:"*) ;;
+  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+esac
+# pnpm end
