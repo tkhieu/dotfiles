@@ -134,6 +134,7 @@ packages:
 
       # DevOps & Cloud
       - '@googleworkspace/cli'
+      - '@shopify/cli@latest'
       - 'vercel'
       - 'wrangler@latest'
 
