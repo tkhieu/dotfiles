@@ -61,6 +61,11 @@ if [[ -f "$_antigen_path" ]]; then
   antigen bundle lukechilds/zsh-nvm
 
   antigen apply
+
+  # Disable oh-my-zsh git plugin's git-svn aliases (gsd, gsr) so `gsd` is free
+  # for other use. The OMZ git plugin has no zstyle filter for svn subset,
+  # so we unalias them explicitly after antigen apply.
+  unalias gsd gsr 2>/dev/null
 fi
 unset _antigen_path
 
