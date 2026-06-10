@@ -22,5 +22,15 @@ for dir in "$PNPM_HOME/bin" "$PNPM_HOME"; do
     *) export PATH="$dir:$PATH" ;;
   esac
 done
+
+# Scrub bogus "@pnpm/exe" global roots before update -g.
+# Cause: brew-managed pnpm occasionally self-installs as a global, creating a
+# root whose package.json points "@pnpm/exe" at "file:/home/linuxbrew/.linuxbrew/bin"
+# (not a real package). The resulting empty node_modules/@pnpm/exe makes any
+# subsequent "pnpm update -g" exit 254 with ENOENT.
+for d in "$PNPM_HOME/global/v11"/*/; do
+  [[ -f "$d/package.json" ]] && grep -q '"@pnpm/exe"' "$d/package.json" && rm -rf "$d"
+done
+
 pnpm update -g
 {{ end -}}
