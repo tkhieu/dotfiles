@@ -1,3 +1,38 @@
+[default]
+region=us-east-1
+output=json
+
+# Production (Go) — read-only. Used by the aws-prod-readonly skill.
+[profile go-regulator-read]
+source_profile=regulator-production
+role_arn=arn:aws:iam::981148246116:role/go-regulator-read
+mfa_serial=arn:aws:iam::981148246116:mfa/1pw-totp
+mfa_process=op item get "Amazon br-prod-981148246116" --vault BrandRegulator --otp
+region=us-east-1
+output=json
+
+# Staging — read-only, for side-by-side comparison with production.
+[profile staging-regulator-read]
+source_profile=regulator-staging
+role_arn=arn:aws:iam::527980796301:role/staging-regulator-read
+mfa_serial=arn:aws:iam::527980796301:mfa/Hieu
+mfa_process=op item get "Amazon br-stg-527980796301" --otp
+region=us-east-1
+output=json
+
+[profile regulator-production]
+
+[profile regulator-staging]
+
+# Staging — the read role is not granted to this user; dev is. Used read-only by convention.
+[profile staging-regulator-dev]
+source_profile=regulator-staging
+role_arn=arn:aws:iam::527980796301:role/staging-regulator-dev
+mfa_serial=arn:aws:iam::527980796301:mfa/Hieu
+mfa_process=op item get "Amazon br-stg-527980796301" --otp
+region=us-east-1
+output=json
+
 [sso-session peraichi]
 sso_start_url = https://d-956758a844.awsapps.com/start/#
 sso_region = ap-northeast-1
