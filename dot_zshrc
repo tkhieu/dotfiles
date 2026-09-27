@@ -1,9 +1,5 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+# ~/.zshrc — fish-like zsh: antidote plugins, Starship prompt, mise runtimes.
+# Plugin list lives in ~/.zsh_plugins.txt; antidote compiles it to a static file.
 
 # --- OS Detection ---
 case "$(uname -s)" in
@@ -26,48 +22,42 @@ elif [[ "$_OS" == "linux" && -d /home/linuxbrew/.linuxbrew ]]; then
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
-# --- Antigen (plugin manager) ---
-if [[ "$_OS" == "macos" ]]; then
-  _antigen_path="$(brew --prefix)/share/antigen/antigen.zsh"
-elif [[ "$_OS" == "linux" ]]; then
-  _antigen_path="/home/linuxbrew/.linuxbrew/share/antigen/antigen.zsh"
-fi
-if [[ -f "$_antigen_path" ]]; then
-  source "$_antigen_path"
+# --- History ---
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=50000
+SAVEHIST=50000
+setopt SHARE_HISTORY HIST_IGNORE_ALL_DUPS HIST_IGNORE_SPACE HIST_REDUCE_BLANKS
+setopt AUTO_CD INTERACTIVE_COMMENTS
 
-  antigen use oh-my-zsh
-
-  # plugins
-  # Note: oh-my-zsh node/npm plugins intentionally omitted — they conflict
-  # with zsh-nvm lazy loading (loaded below).
-  antigen bundle git
-  antigen bundle aws
-  antigen bundle pip
-  antigen bundle terraform
-  antigen bundle heroku
-  antigen bundle git-extras
-  antigen bundle zsh-users/zsh-autosuggestions
-  antigen bundle zdharma-continuum/fast-syntax-highlighting
-  antigen bundle djui/alias-tips
-
-  # theme
-  antigen theme romkatv/powerlevel10k
-
-  # nvm-zsh (lazy loading)
-  export NVM_DIR="$HOME/.nvm"
-  export NVM_COMPLETION=true
-  export NVM_LAZY_LOAD=true
-  export NVM_AUTO_USE=true
-  antigen bundle lukechilds/zsh-nvm
-
-  antigen apply
-
-  # Disable oh-my-zsh git plugin's git-svn aliases (gsd, gsr) so `gsd` is free
-  # for other use. The OMZ git plugin has no zstyle filter for svn subset,
-  # so we unalias them explicitly after antigen apply.
+# --- Plugins (antidote) ---
+# Autosuggestions: suggest from history first, then from completion.
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+_antidote="${HOMEBREW_PREFIX:-/nonexistent}/opt/antidote/share/antidote/antidote.zsh"
+# oh-my-zsh lib is loaded as plain files; never run its self-update check.
+zstyle ':omz:update' mode disabled
+if [[ -r "$_antidote" ]]; then
+  source "$_antidote"
+  antidote load "$HOME/.zsh_plugins.txt"
+  # Free the OMZ git-svn aliases (gsd, gsr) for other use.
   unalias gsd gsr 2>/dev/null
 fi
-unset _antigen_path
+unset _antidote
+
+# --- Completion: menu selection, case-insensitive and partial-word matching ---
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=*'
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*:descriptions' format '%F{yellow}-- %d --%f'
+
+# --- Key bindings: ↑/↓ search history by the typed prefix, Ctrl+←/→ by word ---
+if (( $+functions[history-substring-search-up] )); then
+  bindkey '^[[A' history-substring-search-up
+  bindkey '^[[B' history-substring-search-down
+  bindkey '^[OA' history-substring-search-up
+  bindkey '^[OB' history-substring-search-down
+fi
+bindkey '^[[1;5C' forward-word
+bindkey '^[[1;5D' backward-word
 
 # --- User-local binaries (e.g., Claude Code CLI installer target) ---
 if [[ -d "$HOME/.local/bin" ]]; then
@@ -95,32 +85,6 @@ if [[ "$_OS" == "macos" ]]; then
   fi
 fi
 
-# --- pyenv ---
-if command -v pyenv &>/dev/null; then
-  export PYENV_ROOT="$HOME/.pyenv"
-  [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-  # Clear stale pyenv-rehash lock if no rehash process is actually running.
-  # Why: a killed/crashed rehash leaves .pyenv-shim behind, blocking subsequent
-  # rehashes for 60s on every shell startup.
-  if [[ -e "$PYENV_ROOT/shims/.pyenv-shim" ]] && ! pgrep -f 'pyenv-rehash' >/dev/null 2>&1; then
-    rm -f "$PYENV_ROOT/shims/.pyenv-shim"
-  fi
-  eval "$(pyenv init -)"
-fi
-
-# --- RVM ---
-if [[ -d "$HOME/.rvm" ]]; then
-  export PATH="$PATH:$HOME/.rvm/bin"
-fi
-
-# --- p10k ---
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# --- asdf ---
-if command -v asdf &>/dev/null || [[ -d "${ASDF_DATA_DIR:-$HOME/.asdf}" ]]; then
-  export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
-fi
-
 # --- Ruby gems ---
 if [[ -d "$HOME/.gem/ruby/3.3.0" ]]; then
   export PATH="$PATH:$HOME/.gem/ruby/3.3.0"
@@ -140,12 +104,6 @@ elif [[ "$_OS" == "linux" && -d "$HOME/Android/Sdk" ]]; then
 fi
 if [[ -n "$ANDROID_HOME" && -d "$ANDROID_HOME" ]]; then
   export PATH="$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools"
-fi
-
-# --- SDKMAN ---
-if [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]]; then
-  export SDKMAN_DIR="$HOME/.sdkman"
-  source "$HOME/.sdkman/bin/sdkman-init.sh"
 fi
 
 # --- Conda ---
@@ -218,3 +176,20 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME/bin:$PATH" ;;
 esac
 # pnpm end
+
+# --- Runtimes (mise: node, python via uv, per-project versions) ---
+if command -v mise &>/dev/null; then
+  eval "$(mise activate zsh)"
+fi
+
+# --- fzf: Ctrl+R history, Ctrl+T files, Alt+C directories ---
+# Only on a terminal: without a TTY (e.g. editors running `zsh -i -c env`)
+# fzf's key-binding script fails to restore the zle option and prints errors.
+if [[ -t 0 ]] && command -v fzf &>/dev/null; then
+  source <(fzf --zsh)
+fi
+
+# --- Prompt ---
+if command -v starship &>/dev/null; then
+  eval "$(starship init zsh)"
+fi

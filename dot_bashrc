@@ -1,7 +1,32 @@
-# ~/.bashrc — minimal bash fallback (primary interactive shell is zsh; see dot_zshrc)
+# ~/.bashrc — bash fallback (primary interactive shell is zsh; see dot_zshrc).
+# Also used by non-zsh tools that spawn bash (e.g. Claude Code's Bash tool).
 
-# RVM to PATH (kept last among PATH changes, per RVM scripting guidance)
-export PATH="$PATH:$HOME/.rvm/bin"
+# Keep the distro defaults (prompt, completion, aliases). Fedora and macOS only
+# read /etc/bashrc through ~/.bashrc; Debian/Ubuntu bash reads /etc/bash.bashrc itself.
+if [[ -f /etc/bashrc ]]; then
+  . /etc/bashrc
+fi
+
+# Homebrew
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+# User-local binaries (Claude Code installer target) and pnpm globals
+export PNPM_HOME="$HOME/.local/share/pnpm"
+for dir in "$PNPM_HOME/bin" "$HOME/.local/bin"; do
+  case ":$PATH:" in
+    *":$dir:"*) ;;
+    *) export PATH="$dir:$PATH" ;;
+  esac
+done
+
+# Runtimes managed by mise (node, per-project versions)
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate bash)"
+fi
 
 # Tool environment hooks. Each is guarded so a fresh machine that does not
 # have the tool installed does not break bash startup with a failed source.
