@@ -80,7 +80,7 @@ GROUPS_SELECTION ?=
 
 test-container:
 	@test -n "$(BASE_$(DISTRO))" || { echo "unknown DISTRO=$(DISTRO) (fedora|ubuntu)"; exit 1; }
-	$(ENGINE) build -t dotfiles-test:$(DISTRO) --build-arg BASE=$(BASE_$(DISTRO)) tests/container
+	$(ENGINE) build -t dotfiles-test:$(DISTRO) -f tests/container/Containerfile --build-arg BASE=$(BASE_$(DISTRO)) tests/container
 	$(ENGINE) run --rm -e GROUPS_SELECTION="$(GROUPS_SELECTION)" \
 	  -v "$(CURDIR)":/src:ro,z -v dotfiles-brew-$(DISTRO):/home/linuxbrew \
 	  dotfiles-test:$(DISTRO) /src/tests/container/run.sh
