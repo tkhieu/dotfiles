@@ -45,7 +45,8 @@ yaml_json() {
 
 @test "core group includes the shell toolchain" {
   json="$(yaml_json)"
-  for pkg in git fzf antidote starship mise; do
+  # git-lfs: the managed gitconfig sets filter.lfs.required.
+  for pkg in git git-lfs fzf antidote starship mise; do
     run jq -e --arg p "$pkg" '.packages.groups.core.brew | index($p)' <<<"$json"
     [ "$status" -eq 0 ] || { echo "missing core package: $pkg"; return 1; }
   done
