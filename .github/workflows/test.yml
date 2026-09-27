@@ -35,13 +35,16 @@ jobs:
             ${{ runner.os }}-brew-
 
       - name: Install test dependencies
-        run: brew install bats-core shellcheck
+        run: brew install bats-core shellcheck chezmoi
 
       - name: Run tests
         run: make test
 
       - name: Validate configs
         run: make validate-configs
+
+      - name: Dry-run apply (renders every template and script for macOS)
+        run: chezmoi init --source "$PWD" --promptDefaults --apply --dry-run --verbose
 
   test-ubuntu:
     name: Test (Ubuntu)
@@ -53,20 +56,21 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y bats shellcheck zsh
+          sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
 
       - name: Run tests
         run: make test
 
-  template-validation:
-    name: Validate Chezmoi Templates
+  test-container:
+    name: End-to-end (${{ matrix.distro }})
     runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        distro: [fedora, ubuntu]
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install chezmoi
-        run: sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
-
-      - name: Validate templates
-        run: |
-          chezmoi execute-template '{{ .chezmoi.os }}' | grep -q "linux"
-          echo "Template validation passed"
+      - name: Apply dotfiles in a clean container and verify
+        run: make test-container DISTRO=${{ matrix.distro }} ENGINE=docker
