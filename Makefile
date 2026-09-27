@@ -16,8 +16,8 @@ SC_EXCLUDES := -e SC2296 -e SC1090 -e SC1091 -e SC2148
 # SC2034: zsh special parameters (SAVEHIST, plugin settings) look unused to bash
 # SC2154: zsh $functions / $+functions[...] parameter lookups
 SC_ZSH_EXCLUDES := $(SC_EXCLUDES) -e SC2181 -e SC2034 -e SC2154
-# SC2329: helper functions invoked indirectly via `export -f`
-SC_TEST_EXCLUDES := -e SC1091 -e SC2329
+# SC2329 (SC2317 before shellcheck 0.10): helper functions invoked indirectly via `export -f`
+SC_TEST_EXCLUDES := -e SC1091 -e SC2329 -e SC2317
 
 # Test all (recursive)
 test: lint
