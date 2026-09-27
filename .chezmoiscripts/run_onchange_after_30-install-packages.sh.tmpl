@@ -1,0 +1,74 @@
+{{ if or (eq .chezmoi.os "darwin") (eq .chezmoi.os "linux") -}}
+{{- /* Machines initialised before package groups existed get the defaults. */ -}}
+{{- $selected := list "core" "dev" "ai" -}}
+{{- if hasKey . "groups" }}{{ $selected = .groups }}{{ end -}}
+{{- if not (has "core" $selected) }}{{ $selected = prepend $selected "core" }}{{ end -}}
+{{- $brews := list -}}
+{{- $pnpm := list -}}
+{{- range $group := $selected }}{{ with index $.packages.groups $group -}}
+{{-   $brews = concat $brews (get . "brew" | default list) -}}
+{{-   $pnpm = concat $pnpm (get . "pnpm" | default list) -}}
+{{- end }}{{ end -}}
+{{- if eq .chezmoi.os "darwin" }}{{ $brews = concat $brews .packages.darwin.brews }}{{ end -}}
+#!/bin/bash
+# Install the selected package groups: {{ $selected | join ", " }}
+set -euo pipefail
+
+# chezmoi runs scripts in a non-interactive shell that does not source ~/.zshrc.
+for brew_bin in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+  if [[ -x "$brew_bin" ]]; then
+    eval "$("$brew_bin" shellenv)"
+    break
+  fi
+done
+
+# Homebrew 6 only loads third-party tap formulae that were explicitly trusted.
+# Trust exactly the tap formulae listed in packages.yaml, not their whole taps.
+{{ range $brews -}}
+{{ if eq (len (splitList "/" .)) 3 -}}
+brew trust --formula {{ . | quote }}
+{{ end -}}
+{{ end -}}
+
+BREWFILE="$(mktemp)"
+trap 'rm -f "$BREWFILE"' EXIT
+cat > "$BREWFILE" <<EOF
+{{ range $brews -}}
+brew {{ . | quote }}
+{{ end -}}
+{{ if eq .chezmoi.os "darwin" -}}
+{{ range .packages.darwin.casks -}}
+cask {{ . | quote }}
+{{ end -}}
+{{ end -}}
+EOF
+
+# Bottle downloads occasionally fail mid-stream; brew bundle is idempotent, so retry.
+for attempt in 1 2 3; do
+  brew bundle --file="$BREWFILE" && break
+  [[ "$attempt" -eq 3 ]] && exit 1
+  echo "[packages] brew bundle failed (attempt $attempt), retrying in 10s"
+  sleep 10
+done
+
+# Runtimes from ~/.config/mise/config.toml; pnpm globals need node on PATH.
+if command -v mise >/dev/null 2>&1; then
+  mise install --yes
+  eval "$(mise env -s bash)"
+fi
+
+{{ if $pnpm -}}
+CHEZMOI_SOURCE_DIR="{{ .chezmoi.sourceDir }}"
+# shellcheck source=../install/common.sh
+source "$CHEZMOI_SOURCE_DIR/install/common.sh"
+# shellcheck source=../install/pnpm-globals.sh
+source "$CHEZMOI_SOURCE_DIR/install/pnpm-globals.sh"
+
+install_globals {{ range $pnpm }}{{ . | quote }} {{ end }}
+{{ end -}}
+
+# Install Claude Code CLI via official installer (self-updating; installs latest)
+if ! command -v claude >/dev/null 2>&1 && [[ ! -x "$HOME/.local/bin/claude" ]]; then
+  curl -fsSL https://claude.ai/install.sh | bash
+fi
+{{ end -}}

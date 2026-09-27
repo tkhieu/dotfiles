@@ -1,0 +1,13 @@
+{{ if eq .chezmoi.os "linux" -}}
+#!/bin/bash
+# Install Homebrew on Linux when it is missing.
+set -euo pipefail
+
+if command -v brew >/dev/null 2>&1 || [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+  echo "[homebrew] already installed"
+  exit 0
+fi
+
+echo "[homebrew] installing"
+NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+{{ end -}}

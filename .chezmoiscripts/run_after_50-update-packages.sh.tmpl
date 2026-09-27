@@ -1,14 +1,28 @@
 {{ if or (eq .chezmoi.os "darwin") (eq .chezmoi.os "linux") -}}
 #!/bin/bash
+# Update Homebrew and pnpm globals on every apply. Distro packages (dnf/apt) are
+# left to the system updater so an apply never needs sudo on a set-up machine.
 set -euo pipefail
 
-{{ if eq .chezmoi.os "linux" -}}
-echo "Updating apt packages..."
-sudo apt-get update && sudo apt-get upgrade -y
+for brew_bin in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+  if [[ -x "$brew_bin" ]]; then
+    eval "$("$brew_bin" shellenv)"
+    break
+  fi
+done
 
-{{ end -}}
-echo "Updating Homebrew packages..."
-brew update && brew upgrade
+if command -v brew >/dev/null 2>&1; then
+  echo "Updating Homebrew packages..."
+  brew update && brew upgrade
+fi
+
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise env -s bash)"
+fi
+
+if ! command -v pnpm >/dev/null 2>&1; then
+  exit 0
+fi
 
 echo "Updating pnpm global packages..."
 # chezmoi runs this in a non-interactive shell that does not source ~/.zshrc,
