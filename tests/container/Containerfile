@@ -1,0 +1,23 @@
+# Clean-machine image for end-to-end dotfiles tests (Fedora or Debian family).
+ARG BASE=registry.fedoraproject.org/fedora:44
+FROM ${BASE}
+
+# Only what a fresh desktop install already has: sudo, curl, git, a CA bundle,
+# and `script` to give zsh a real terminal during verification.
+RUN if command -v dnf >/dev/null; then \
+      dnf -y install sudo curl git ca-certificates util-linux-script && dnf clean all; \
+    else \
+      apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y sudo curl git ca-certificates \
+      && rm -rf /var/lib/apt/lists/*; \
+    fi
+
+# chezmoi baked into the image so test runs do not re-download it.
+RUN sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
+
+# Homebrew refuses to run as root; test as a sudo-capable regular user.
+RUN useradd -m -s /bin/bash tester \
+    && echo 'tester ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/tester \
+    && mkdir -p /home/linuxbrew && chown tester: /home/linuxbrew
+
+USER tester
+WORKDIR /home/tester
