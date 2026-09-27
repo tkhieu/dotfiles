@@ -75,13 +75,14 @@ Scripts in `.chezmoiscripts/` run in order: distro packages (10), Homebrew (20),
 
 ### Git (`private_dot_gitconfig.tmpl`)
 
-- SSH commit signing via 1Password (ed25519)
+- SSH commit and tag signing via 1Password (ed25519)
 - Cross-platform: macOS (`op-ssh-sign`), WSL (`op-ssh-sign-wsl`), Linux native (`/opt/1Password/op-ssh-sign`)
 - Default branch: `main`, signing enabled by default
+- `gh` as the credential helper for HTTPS on github.com and gist.github.com
 
 ### AWS (`dot_aws/private_config`)
 
-- SSO profiles for peraichi (staging + production)
+- SSO profiles for peraichi (staging + production) and role profiles for the regulator accounts (MFA codes from 1Password via `mfa_process`, used with aws-vault)
 - Stored with `0600` permissions via chezmoi `private_` prefix. **Not encrypted** -- chezmoi `private_` only sets file mode, it does not encrypt. The file contains only SSO start URLs and account IDs (no long-lived secrets). Use the `encrypted_` prefix + age/gpg if real secrets are ever added.
 
 ## File Structure
