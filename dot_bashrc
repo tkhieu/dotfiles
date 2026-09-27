@@ -14,9 +14,9 @@ elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
-# User-local binaries (Claude Code installer target) and pnpm globals
+# User-local binaries (Claude Code installer target), ~/bin and pnpm globals
 export PNPM_HOME="$HOME/.local/share/pnpm"
-for dir in "$PNPM_HOME/bin" "$HOME/.local/bin"; do
+for dir in "$PNPM_HOME/bin" "$HOME/bin" "$HOME/.local/bin"; do
   case ":$PATH:" in
     *":$dir:"*) ;;
     *) export PATH="$dir:$PATH" ;;
@@ -36,3 +36,21 @@ fi
 
 # LM Studio CLI (lms)
 [[ -d "$HOME/.lmstudio/bin" ]] && export PATH="$PATH:$HOME/.lmstudio/bin"
+
+# Grok CLI
+if [[ -d "$HOME/.grok/bin" ]]; then
+  export PATH="$HOME/.grok/bin:$PATH"
+  [[ -r "$HOME/.grok/completions/bash/grok.bash" ]] && . "$HOME/.grok/completions/bash/grok.bash"
+fi
+
+# aws-vault on Linux: use the passphrase-protected file backend (~/.awsvault/keys).
+# The login keyring unlocks itself at login, so it does not protect credentials.
+[[ "$(uname -s)" == Linux ]] && export AWS_VAULT_BACKEND=file
+
+# Machine-specific additions that are not managed by chezmoi
+if [[ -d "$HOME/.bashrc.d" ]]; then
+  for rc in "$HOME"/.bashrc.d/*; do
+    [[ -f "$rc" ]] && . "$rc"
+  done
+  unset rc
+fi
