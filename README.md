@@ -34,7 +34,7 @@ Packages are organised in groups. `chezmoi init` shows a checklist (defaults: `c
 
 | Group | Contents |
 |-------|----------|
-| `core` | antidote, starship, mise, pnpm, fzf, neovim, git, gh, tig, git-extras, git-filter-repo, jq, htop, direnv, aria2, zstd |
+| `core` | antidote, starship, mise, pnpm, fzf, neovim, git, gh, tig, git-extras, git-filter-repo, git-lfs, jq, htop, direnv, aria2, zstd |
 | `dev` | bun, uv, pipx, shellcheck, bats-core, mysql-client, libyaml; pnpm: typescript, typescript-language-server, intelephense, ast-grep |
 | `ai` | opencode, multica; pnpm: amp, crush, ecc-universal, pen |
 | `devops` | awscli, aws-vault, act, dnscontrol |
