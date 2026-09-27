@@ -1,0 +1,18 @@
+{{ if eq .chezmoi.os "linux" -}}
+{{- $family := includeTemplate "linux-family" . -}}
+#!/bin/bash
+# Install Homebrew prerequisites and zsh with the distro package manager.
+set -euo pipefail
+
+{{ if $family -}}
+CHEZMOI_SOURCE_DIR="{{ .chezmoi.sourceDir }}"
+# shellcheck source=../install/common.sh
+source "$CHEZMOI_SOURCE_DIR/install/common.sh"
+# shellcheck source=../install/system-packages.sh
+source "$CHEZMOI_SOURCE_DIR/install/system-packages.sh"
+
+install_system_packages {{ $family | quote }} {{ range (index .packages.system $family) }}{{ . | quote }} {{ end }}
+{{ else -}}
+echo "[system-packages] unsupported distro '{{ get (.chezmoi.osRelease | default dict) "id" | default "unknown" }}', skipping; install zsh and Homebrew prerequisites manually"
+{{ end -}}
+{{ end -}}

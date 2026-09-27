@@ -1,0 +1,7 @@
+# Global runtimes (https://mise.jdx.dev). Projects pin their own versions in
+# mise.toml, .tool-versions or .nvmrc. Python is managed per project with uv.
+[tools]
+node = "lts"
+
+[settings]
+idiomatic_version_file_enable_tools = ["node"]

@@ -1,0 +1,5 @@
+# ~/.zshenv — read by every zsh, keep it minimal.
+
+# Ubuntu's /etc/zsh/zshrc runs compinit on its own; ~/.zshrc already does it
+# through antidote, so skip the duplicate (slow) global call.
+skip_global_compinit=1

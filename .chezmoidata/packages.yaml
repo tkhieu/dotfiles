@@ -1,63 +1,96 @@
 packages:
-  darwin:
-    # Canonical brew list. Linux reuses it via the *brews alias below
-    # (darwin and linux installed identical brews — single source of truth).
-    brews: &brews
-      # Core & Shell
-      - 'antigen'
-      - 'fzf'
+  # Minimal packages installed with the distro package manager on Linux:
+  # Homebrew prerequisites plus zsh (the login shell must not depend on brew).
+  system:
+    fedora:
+      - '@development-tools'
+      - 'procps-ng'
+      - 'curl'
+      - 'file'
       - 'git'
-      - 'htop'
-      - 'jq'
-      - 'neovim'
+      - 'python3'
+      - 'zsh'
+    debian:
+      - 'build-essential'
+      - 'procps'
+      - 'curl'
+      - 'file'
+      - 'git'
+      - 'python3'
       - 'zsh'
 
-      # Git Tools
-      - 'gh'
-      - 'git-filter-repo'
-      - 'git-extras'
-      - 'tig'
+  # Package groups shared by macOS and Linux. `chezmoi init` asks which groups
+  # to install (see .chezmoi.toml.tmpl); `core` is always installed.
+  groups:
+    core:
+      brew:
+        - 'antidote'
+        - 'aria2'
+        - 'direnv'
+        - 'fzf'
+        - 'gh'
+        - 'git'
+        - 'git-extras'
+        - 'git-filter-repo'
+        - 'htop'
+        - 'jq'
+        - 'mise'
+        - 'neovim'
+        - 'pnpm'
+        - 'starship'
+        - 'tig'
+        - 'zstd'
 
-      # Package & Version Managers
-      - 'asdf'
-      - 'oven-sh/bun/bun'
-      - 'npm'
-      - 'nvm'
-      - 'pipx'
-      - 'pnpm'
-      - 'pyenv'
-      - 'yarn'
+    dev:
+      brew:
+        - 'bats-core'
+        - 'libyaml'
+        - 'mysql-client'
+        - 'oven-sh/bun/bun'
+        - 'pipx'
+        - 'shellcheck'
+        - 'uv'
+      pnpm:
+        - '@ast-grep/cli'
+        - 'intelephense'
+        - 'typescript'
+        - 'typescript-language-server'
 
-      # DevOps & Cloud
-      - 'act'
-      - 'awscli'
-      - 'aws-sso-util'
-      - 'direnv'
-      - 'dnscontrol'
-      - 'supabase/tap/supabase'
+    ai:
+      brew:
+        - 'multica-ai/tap/multica'
+        - 'opencode'
+      pnpm:
+        - '@charmland/crush'
+        - '@pen.dev/cli'
+        - '@sourcegraph/amp'
+        - 'ecc-universal'
 
-      # Development Libraries
-      - 'ffmpeg'
-      - 'grpc'
-      - 'imagemagick'
-      - 'libyaml'
-      - 'mysql-client'
-      - 'zstd'
+    devops:
+      brew:
+        - 'act'
+        - 'aws-vault'
+        - 'awscli'
+        - 'dnscontrol'
 
-      # Testing Tools
-      - 'bats-core'
-      - 'semgrep'
-      - 'shellcheck'
+    media:
+      brew:
+        - 'ffmpeg'
+        - 'imagemagick'
 
-      # Utilities
-      - 'aria2'
+    cloud-cli:
+      brew:
+        - 'supabase/tap/supabase'
+      pnpm:
+        - '@googleworkspace/cli'
+        - '@shopify/cli@latest'
+        - 'vercel'
+        - 'wrangler@latest'
 
-      # AI Tools
+  darwin:
+    # macOS-only formulae, installed regardless of the selected groups.
+    brews:
       - 'asc'
-      - 'beads'
-      - 'block-goose-cli'
-      - 'ollama'
-      - 'opencode'
 
     casks:
       # Browsers
@@ -103,7 +136,6 @@ packages:
 
       # AI Tools
       - 'antigravity'
-      - 'block-goose'
       - 'claude'
       - 'claude-devtools'
       - 'lm-studio'
@@ -119,33 +151,3 @@ packages:
 
       # Cloud & AWS
       - 'session-manager-plugin'
-
-    # Canonical pnpm global list, reused by linux via the *pnpm_globals alias.
-    pnpm_globals: &pnpm_globals
-      # AI Tools
-      - '@sourcegraph/amp'
-      - '@openai/codex'
-      - 'claudekit-cli'
-      - 'uipro-cli'
-      - '@charmland/crush'
-      - '@kaitranntt/ccs'
-      - '@pencil.dev/cli'
-      - 'ecc-universal'
-
-      # DevOps & Cloud
-      - '@googleworkspace/cli'
-      - '@shopify/cli@latest'
-      - 'vercel'
-      - 'wrangler@latest'
-
-  linux:
-    # Prerequisites for Homebrew on Linux (installed via apt)
-    apt_prerequisites:
-      - 'build-essential'
-      - 'procps'
-      - 'curl'
-      - 'file'
-      - 'git'
-
-    brews: *brews
-    pnpm_globals: *pnpm_globals

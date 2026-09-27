@@ -91,3 +91,11 @@ teardown() {
   [[ "$output" == *"typescript"* ]]
   [[ "$output" == *"eslint"* ]]
 }
+
+@test "install_global uses a hoisted node_modules layout for @pen.dev/cli" {
+  mock_pnpm
+
+  run install_global "@pen.dev/cli"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"pnpm install -g --config.node-linker=hoisted @pen.dev/cli"* ]]
+}

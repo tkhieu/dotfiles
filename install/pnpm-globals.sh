@@ -37,13 +37,23 @@ ensure_pnpm_build_approval() {
   pnpm config set dangerouslyAllowAllBuilds true >/dev/null 2>&1 || true
 }
 
+# Packages whose dependencies are only resolvable with a hoisted node_modules
+# layout (e.g. @pen.dev/cli fails to find css-tree under pnpm's default isolated layout).
+HOISTED_PACKAGES=("@pen.dev/cli")
+
 # Install single global package
 install_global() {
   local package="$1"
+  local -a extra_args=()
+  local hoisted
   ensure_pnpm || return 1
   ensure_pnpm_global_path
   ensure_pnpm_build_approval
-  pnpm install -g "$package"
+  for hoisted in "${HOISTED_PACKAGES[@]}"; do
+    [[ "$package" == "$hoisted" ]] && extra_args=(--config.node-linker=hoisted)
+  done
+  # ${arr[@]+...} keeps bash 3.2 (macOS /bin/bash) happy with `set -u` on empty arrays.
+  pnpm install -g ${extra_args[@]+"${extra_args[@]}"} "$package"
 }
 
 # Install multiple global packages

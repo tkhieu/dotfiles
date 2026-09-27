@@ -1,0 +1,4 @@
+abbr "cm"="chezmoi"
+abbr "dc"="docker compose"
+abbr "k"="kubectl"
+abbr "pn"="pnpm"

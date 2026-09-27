@@ -14,8 +14,13 @@ BASHRC="$PROJECT_ROOT/dot_bashrc"
   [ "$status" -eq 0 ]
 }
 
-@test "dot_bashrc sets RVM path" {
-  run grep -q "\.rvm/bin" "$BASHRC"
+@test "dot_bashrc keeps the distro bashrc" {
+  run grep -qE "/etc/bashrc|/etc/bash.bashrc" "$BASHRC"
+  [ "$status" -eq 0 ]
+}
+
+@test "dot_bashrc activates mise" {
+  run grep -q "mise activate bash" "$BASHRC"
   [ "$status" -eq 0 ]
 }
 

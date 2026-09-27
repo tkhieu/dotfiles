@@ -1,5 +1,5 @@
 # Makefile - Test orchestration for chezmoi dotfiles
-.PHONY: test lint lint-bash lint-install check install-test-deps validate-configs test-config test-install ci ci-lint ci-test
+.PHONY: test-container test-container-clean test lint lint-bash lint-install check install-test-deps validate-configs test-config test-install ci ci-lint ci-test
 
 SHELL := /bin/bash
 BATS := bats
@@ -13,9 +13,11 @@ SHELLCHECK := shellcheck
 SC_EXCLUDES := -e SC2296 -e SC1090 -e SC1091 -e SC2148
 # Extra excludes for dot_zshrc when parsed by the bash-based shellcheck
 # SC2181: $? check (acceptable in the conda init block)
-SC_ZSH_EXCLUDES := $(SC_EXCLUDES) -e SC2181
-# SC2329: helper functions invoked indirectly via `export -f`
-SC_TEST_EXCLUDES := -e SC1091 -e SC2329
+# SC2034: zsh special parameters (SAVEHIST, plugin settings) look unused to bash
+# SC2154: zsh $functions / $+functions[...] parameter lookups
+SC_ZSH_EXCLUDES := $(SC_EXCLUDES) -e SC2181 -e SC2034 -e SC2154
+# SC2329 (SC2317 before shellcheck 0.10): helper functions invoked indirectly via `export -f`
+SC_TEST_EXCLUDES := -e SC1091 -e SC2329 -e SC2317
 
 # Test all (recursive)
 test: lint
@@ -32,7 +34,7 @@ lint-bash:
 
 # Lint install scripts (strict)
 lint-install:
-	@$(SHELLCHECK) -x -e SC1091 install/*.sh
+	@$(SHELLCHECK) -x -e SC1091 install/*.sh .chezmoiscripts/*.sh
 	@$(SHELLCHECK) -x $(SC_TEST_EXCLUDES) tests/test_helper/*.bash
 
 # Full check
@@ -67,3 +69,25 @@ ci-lint: lint
 # CI test (all tests must pass)
 ci-test:
 	@$(BATS) --recursive tests/
+
+# --- End-to-end tests in a clean container (podman or docker) ---
+# make test-container DISTRO=fedora|ubuntu [GROUPS_SELECTION=core/media]
+ENGINE ?= $(shell command -v podman 2>/dev/null || command -v docker)
+DISTRO ?= fedora
+BASE_fedora := registry.fedoraproject.org/fedora:44
+BASE_ubuntu := docker.io/library/ubuntu:24.04
+GROUPS_SELECTION ?=
+
+test-container:
+	@test -n "$(BASE_$(DISTRO))" || { echo "unknown DISTRO=$(DISTRO) (fedora|ubuntu)"; exit 1; }
+	$(ENGINE) build -t dotfiles-test:$(DISTRO) -f tests/container/Containerfile --build-arg BASE=$(BASE_$(DISTRO)) tests/container
+	$(ENGINE) run --rm -e GROUPS_SELECTION="$(GROUPS_SELECTION)" \
+	  -v "$(CURDIR)":/src:ro,z -v dotfiles-brew-$(DISTRO):/home/linuxbrew \
+	  dotfiles-test:$(DISTRO) /src/tests/container/run.sh
+
+# ":z" (shared SELinux label) lets several containers read the repo at once;
+# ":Z" would relabel it privately and lock out a concurrently running container.
+
+# Drop the cached Homebrew volume to test a completely fresh machine.
+test-container-clean:
+	-$(ENGINE) volume rm dotfiles-brew-$(DISTRO)

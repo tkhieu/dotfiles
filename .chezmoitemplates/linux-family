@@ -1,0 +1,10 @@
+{{- /* Prints the distro family ("fedora", "debian") or "" when unsupported. */ -}}
+{{- $osRelease := .chezmoi.osRelease | default dict -}}
+{{- $id := get $osRelease "id" | default "" -}}
+{{- $like := get $osRelease "idLike" | default "" -}}
+{{- /* RHEL clones share idLike "fedora" but name their dnf groups differently. */ -}}
+{{- if eq $id "fedora" -}}
+fedora
+{{- else if or (eq $id "debian") (eq $id "ubuntu") (contains "debian" $like) (contains "ubuntu" $like) -}}
+debian
+{{- end -}}
