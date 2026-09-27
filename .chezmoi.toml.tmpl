@@ -1,0 +1,8 @@
+{{- /* Package groups: asked once on `chezmoi init`, re-ask with `chezmoi init --prompt`. */ -}}
+{{- $all := list "core" "dev" "ai" "devops" "media" "cloud-cli" -}}
+{{- $groups := promptMultichoiceOnce . "groups" "Package groups to install" $all (list "core" "dev" "ai") -}}
+{{- /* Remember the source used at init (e.g. `chezmoi init --source ~/dotfiles`). */}}
+sourceDir = {{ .chezmoi.sourceDir | quote }}
+
+[data]
+    groups = {{ $groups | toToml }}
