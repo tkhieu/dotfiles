@@ -28,3 +28,15 @@ BASHRC="$PROJECT_ROOT/dot_bashrc"
   run grep -q "export PATH" "$BASHRC"
   [ "$status" -eq 0 ]
 }
+
+@test "dot_bashrc and dot_zshrc keep the aws-vault file backend on Linux" {
+  run grep -q "AWS_VAULT_BACKEND=file" "$BASHRC"
+  [ "$status" -eq 0 ]
+  run grep -q "AWS_VAULT_BACKEND=file" "$PROJECT_ROOT/dot_zshrc"
+  [ "$status" -eq 0 ]
+}
+
+@test "dot_bashrc sources machine-specific files from ~/.bashrc.d" {
+  run grep -q '.bashrc.d' "$BASHRC"
+  [ "$status" -eq 0 ]
+}

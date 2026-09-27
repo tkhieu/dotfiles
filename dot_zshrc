@@ -29,6 +29,16 @@ SAVEHIST=50000
 setopt SHARE_HISTORY HIST_IGNORE_ALL_DUPS HIST_IGNORE_SPACE HIST_REDUCE_BLANKS
 setopt AUTO_CD INTERACTIVE_COMMENTS
 
+# --- Grok CLI (completion must be on fpath before compinit) ---
+if [[ -d "$HOME/.grok/bin" ]]; then
+  export PATH="$HOME/.grok/bin:$PATH"
+  [[ -d "$HOME/.grok/completions/zsh" ]] && fpath=("$HOME/.grok/completions/zsh" "${fpath[@]}")
+fi
+
+# --- aws-vault on Linux: passphrase-protected file backend (~/.awsvault/keys) ---
+# The login keyring unlocks itself at login, so it does not protect credentials.
+[[ "$_OS" == "linux" ]] && export AWS_VAULT_BACKEND=file
+
 # --- Plugins (antidote) ---
 # Autosuggestions: suggest from history first, then from completion.
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
@@ -59,10 +69,11 @@ fi
 bindkey '^[[1;5C' forward-word
 bindkey '^[[1;5D' backward-word
 
-# --- User-local binaries (e.g., Claude Code CLI installer target) ---
-if [[ -d "$HOME/.local/bin" ]]; then
-  export PATH="$HOME/.local/bin:$PATH"
-fi
+# --- User-local binaries (e.g., Claude Code CLI installer target) and ~/bin ---
+for _dir in "$HOME/bin" "$HOME/.local/bin"; do
+  [[ -d "$_dir" ]] && export PATH="$_dir:$PATH"
+done
+unset _dir
 
 # --- JBang ---
 if [[ -d "$HOME/.jbang" ]]; then
