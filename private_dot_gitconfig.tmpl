@@ -32,3 +32,6 @@
 	process = git-lfs filter-process
 	required = true
 	clean = git-lfs clean -- %f
+# Machine-local overrides (e.g. a different signing program); file is optional and unmanaged.
+[include]
+	path = ~/.gitconfig.local
